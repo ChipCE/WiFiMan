@@ -595,7 +595,9 @@ void WiFiMan::handleSave()
         //input seem good, save setting
         writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,masterPasswd);
         //update password for OTA updater 
-        otaUpdater->updatePasswd(masterPasswd.c_str());
+
+        //update password for OTA updater
+        otaUpdater->updatePassword(_masterPasswd);
 
         String page = FPSTR(HTTP_HEADERRELOAD);
         page =page + FPSTR(HTTP_INFO);
@@ -687,6 +689,7 @@ void WiFiMan::handleHelp()
 
 
 
+
 void WiFiMan::setupWebServer()
 {
     printDebug("setupWebServer",true);
@@ -706,7 +709,7 @@ void WiFiMan::setupWebServer()
         otaUpdater->setup(webServer.get());
         printDebug("start otaUpdater",false);
     }
-
+    
     //setup web server handles
     webServer->on("/", std::bind(&WiFiMan::handleRoot, this));
     webServer->on("/config", std::bind(&WiFiMan::handleConfig, this));

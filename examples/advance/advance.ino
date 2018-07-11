@@ -18,7 +18,7 @@ void setup()
     //set username to login (this CANNOT be change later).default is "admin"
     wman.setHttpUsername("user");
     //set password use in the first time login.This can be changed in config menu.Default is "password"
-    wman.setHttpPassword("badPa5sW0rd");
+    wman.setHttpPassword("httpPassword");
 
 
 
@@ -41,7 +41,7 @@ void setup()
     //set default ap SSID .in ap mode, SSID will be <apName>+<chipID> .Default is esp8266-idxxxxxx
     wman.setApName("DeviceNo");
     //set softAP password , if password is blank, the will be set without password
-    wman.setApPasswd("ApPassword");
+    wman.setApPasswd("apPassword");
     
 
     //config commands must be called before start
