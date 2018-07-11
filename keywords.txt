@@ -1,5 +1,17 @@
+#######################################
+# Syntax Coloring Map For WiFiMan
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
 WiFiMan	KEYWORD1
-	
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
 start	KEYWORD2
 deleteConfig	KEYWORD2
 disconnect	KEYWORD2
