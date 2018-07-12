@@ -50,11 +50,11 @@ WiFiMan::WiFiMan(bool authentication,bool serialControl,bool debug)
     String _masterPasswd = "";
 
     //web ui 
-    _title = "ESP8266fw";
-    _banner = "ESP8266 wf";
-    _build = "1.0beta";
-    _branch = "dev";
-    _deviceInfo = "ChipID : " +  String(ESP.getChipId());
+    _title = "ESP8266";
+    _banner = "Config portal";
+    _build = "Build : ";
+    _branch = "Branch : ";
+    _deviceInfo = "ChipId : " + String(ESP.getChipId());
     _footer = "ChipCE";
     _helpInfo = "Please visit homepage for more information!";
 
@@ -602,7 +602,7 @@ void WiFiMan::handleSave()
         String page = FPSTR(HTTP_HEADERRELOAD);
         page =page + FPSTR(HTTP_INFO);
         page=page + FPSTR(HTTP_FOOTER);
-        page.replace("{info}","<br/>Config saved!");
+        page.replace("{info}","<br/>Config saved!<br/>Connecting to network...<br/>You will be disconnect from portal if connect success.");
 
         page.replace("{title}",_title);
         page.replace("{banner}",_banner);
