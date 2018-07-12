@@ -55,7 +55,7 @@ WiFiMan::WiFiMan(bool authentication,bool serialControl,bool debug)
     _build = "Build : ";
     _branch = "Branch : ";
     _deviceInfo = "ChipId : " + String(ESP.getChipId());
-    _footer = "ChipCE";
+    _footer = "ESP8266 WiFiMan";
     _helpInfo = "Please visit homepage for more information!";
 
     //server configs

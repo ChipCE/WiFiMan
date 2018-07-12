@@ -32,7 +32,7 @@ void setup()
     //set text of the help page
     wman.setHelpInfo("This is the help page");
 
-    //set ap ip/subnet/gateway . default is 192.168.1.1/192.168.1.1/255.255.255.0
+    //set ap ip/gateway/subnet . default is 192.168.1.1/192.168.1.1/255.255.255.0
     wman.setApConfig(IPAddress(192, 168, 1, 1),IPAddress(192, 168, 1, 1),IPAddress(255, 255, 255, 0));
     //set max connect attempt, default is 36
     wman.setMaxConnectAttempt(50);
