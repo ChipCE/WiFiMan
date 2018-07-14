@@ -16,16 +16,16 @@ enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
 class WiFiMan
 {
   private:
-    bool DEBUG;
-    bool AUTHENTICATION;
-    bool SERIALCONTROL;
-    bool FORCE_AP;
+    bool DEBUG = false;;
+    bool AUTHENTICATION = false;;
+    bool SERIALCONTROL = false;;
+    bool FORCE_AP = false;
 
     //mode
-    int _mode;
+    int _mode = MODE::INIT;
 
     //action flag
-    int _action;
+    int _action = 0;
 
     //for simple debug print
     void printDebug(String msg,bool primary);
@@ -33,28 +33,28 @@ class WiFiMan
     
     /* server config */
     //number of connect attempt to AP
-    int _maxConnectAttempt;
+    int _maxConnectAttempt = 36;
     //timeout in AP mode (min), server will turnoff after timeout
-    int _configTimeout;
+    int _configTimeout = 15;
     //DNS server port in ap mode
-    byte _DNS_PORT;
+    byte _DNS_PORT = 53;
     //in ap mode, SSID will be <defaultAPName>+<chipID>
-    String _apName;
-    String _apPasswd;
+    String _apName = "esp8266-id";
+    String _apPasswd = "";
     
     //serial buffer
-    String serialBuffer;
+    String serialBuffer = "";
 
     //password use in the first time login to config portal.This can be changed in config menu
-    String _defaultHttpPasswd;
+    String _defaultHttpPasswd = "password";
     //username to login (this cannot be changed later)
-    String _httpUsername;
+    String _httpUsername = "admin";
 
     //Ap setting 
-    IPAddress _apIp;
-    IPAddress _apGateway;
-    IPAddress _apSubnet;
-    String _defaultMqttId;
+    IPAddress _apIp = IPAddress(192, 168, 1, 1);;
+    IPAddress _apGateway = IPAddress(192, 168, 1, 1);
+    IPAddress _apSubnet = IPAddress(255, 255, 255, 0);
+    String _defaultMqttId = "esp8266";
 
     /* config , this data will be stored in config.json */
     String _wifiSsid;
@@ -69,13 +69,13 @@ class WiFiMan
     String _masterPasswd;
 
     //web ui 
-    String _title;
-    String _banner;
-    String _build;
-    String _branch;
-    String _deviceInfo;
-    String _footer;
-    String _helpInfo;
+    String _title = "ESP8266";
+    String _banner = "Config portal";
+    String _build = "Build : ";
+    String _branch = "Branch : ";
+    String _deviceInfo = "ChipId : " + String(ESP.getChipId());
+    String _footer = "ESP8266 WiFiMan";
+    String _helpInfo = "Please visit homepage for more information!";
 
     //controller objects
     std::unique_ptr<DNSServer> dnsServer;

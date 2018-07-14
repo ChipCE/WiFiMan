@@ -9,4 +9,3 @@ Require library <a href="https://github.com/ChipTechno/ESP8266OTA">ESP8266OTA</a
 
 
 ## To-do
-- Fix unstable captive portal

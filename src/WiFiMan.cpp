@@ -20,58 +20,11 @@ WiFiMan::WiFiMan(bool authentication,bool serialControl,bool debug)
     DEBUG=debug;
     AUTHENTICATION=authentication;
     SERIALCONTROL=serialControl;
-    FORCE_AP = false;
-    _mode = MODE::INIT;
-
-    //just incase , disconnect from current connected AP
     WiFi.disconnect();
-
-    //init serial
     Serial.begin(115200);
-
-    serialBuffer = "";
-
     printDebug("\n",true);
     printDebug("start",true);
     printDebug("Booting sketch...",false);
-
-    
-
-    //default value 
-    _wifiSsid = "";
-    _wifiPasswd = "";
-    _mqttAddr = "";
-    _mqttPort = "";
-    _mqttUsername = "";
-    _mqttPasswd = "";
-    _mqttSub = "";
-    _mqttPub = "";
-    String _mqttId = "";
-    String _masterPasswd = "";
-
-    //web ui 
-    _title = "ESP8266";
-    _banner = "Config portal";
-    _build = "Build : ";
-    _branch = "Branch : ";
-    _deviceInfo = "ChipId : " + String(ESP.getChipId());
-    _footer = "ESP8266 WiFiMan";
-    _helpInfo = "Please visit homepage for more information!";
-
-    //server configs
-    _maxConnectAttempt = 36;
-    _configTimeout = 15;
-    _DNS_PORT = 53;
-    _apName = "esp8266-id";
-    _apPasswd = "";
-    _httpUsername = "admin";
-    _defaultHttpPasswd = "password";
-    _apIp = IPAddress(192, 168, 1, 1);
-    _apGateway = IPAddress(192, 168, 1, 1);
-    _apSubnet = IPAddress(255, 255, 255, 0);
-
-    _defaultMqttId = "esp8266";
-    _action = 0;
 }
 
 
@@ -341,6 +294,7 @@ bool WiFiMan::clientMode()
 
 bool WiFiMan::apMode()
 {
+    Serial.println(_apIp.toString());
     printDebug("apMode",true);
     _mode = MODE::AP;
 
@@ -364,11 +318,16 @@ bool WiFiMan::apMode()
     printDebug("SoftAP SIID : "+apSSID,false);
     printDebug("Server IP : "+_apIp.toString(),false);
 
+
     delay(500);
 
     printDebug("Start DNS server",false);
     dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
-    dnsServer->start(_DNS_PORT, "*", WiFi.softAPIP());
+    bool dnsResult = dnsServer->start(_DNS_PORT, "*", _apIp);
+    if(dnsResult)
+        printDebug("DNS success",false);
+    else
+        printDebug("DNS failed",false);
     
     //startweb server
     printDebug("Start web server",false);
@@ -416,7 +375,6 @@ bool WiFiMan::apMode()
         //handle web request
         dnsServer->processNextRequest();
         webServer->handleClient();
-        //yield();
     }
 
     WiFi.softAPdisconnect(true);
