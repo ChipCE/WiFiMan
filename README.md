@@ -3,8 +3,9 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
 
 ## About password setting
 - Soft AP password : Password of ESP8266 when in AP mode .Can be set with setApPasswd("yourPassword").If default password is not set, AP will fireup without password.
-- HTTP access password : Password use to access HTTP config page.Default password and username can be set with setHttpPassword("youPassword") and setHttpUsername("yourUsername").If default password and username are not set, HTTP config page can be access without authentication.After masterPassword is set, HTTP access will use masterPassword instead of defaultPassword
-- Master password : Password to save/edit device config. The default master password is blank, you must change it after first login.
+- HTTP access password : Password use to access HTTP config page.Default password and username can be set with setHttpPassword("youPassword") and setHttpUsername("yourUsername").If authentication is not enabled,HTTP config portal can be access without authentication.If default password is not set the default password will be "password". After masterPassword is set, HTTP access will use masterPassword instead of defaultHttpPassword
+- Master password : password to access HTTP config portal.This password must be change after first login.
+*If master password has been changed.In config portal ,leave "New password" and "Confirm password" fields empty will keep the old password without change it.
 
 ## How to install 
 - Method 1 : Install from Arduino IDE library manager 

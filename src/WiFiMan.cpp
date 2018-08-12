@@ -164,7 +164,7 @@ bool WiFiMan::readConfig()
                     printDebug("Trying to delete config.js",false);
                     deleteConfig();
                     printDebug("write template for config.js",false);
-                    writeConfig(_wifiSsid,_wifiPasswd,_mqttAddr,_mqttPort,_mqttUsername,_mqttPasswd,_mqttSub,_mqttPub,_mqttId,_masterPasswd);
+                    writeConfig("","","","","","","","","","");
                     return false;
                 }
             }
@@ -182,7 +182,7 @@ bool WiFiMan::readConfig()
             printDebug("Unmount FS",false);
             SPIFFS.end();
             printDebug("write template for config.js",false);
-            writeConfig(_wifiSsid,_wifiPasswd,_mqttAddr,_mqttPort,_mqttUsername,_mqttPasswd,_mqttSub,_mqttPub,_mqttId,_masterPasswd);
+            writeConfig("","","","","","","","","","");
             return false;
         }
     }
@@ -551,8 +551,10 @@ void WiFiMan::handleSave()
     if( errorMsg == "")
     {
         //input seem good, save setting
-        writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,masterPasswd);
-        //update password for OTA updater 
+        if(masterPasswd!="")
+            writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,masterPasswd);//change master password
+        else
+            writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,_masterPasswd);//keep old master password
 
         //update password for OTA updater
         otaUpdater->updatePassword(_masterPasswd);
@@ -742,10 +744,15 @@ String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,Str
         errorMsg += "Invalid MQTT username or password<br/>"; 
     //skip check for mqtt id , id not set , use esp8266 chipID instead
 
-    if(masterPasswd == "" || masterPasswd == _defaultHttpPasswd)
-        errorMsg += "Invalid Password!<br/>"; 
-    if(masterPasswd != confirmPasswd)
-        errorMsg += "Confirm password not matched<br/>"; 
+    if(AUTHENTICATION)
+    {
+        if(_masterPasswd=="" &&  masterPasswd =="")
+            errorMsg += "New master password mut be set!<br/>"; 
+        if(masterPasswd == _defaultHttpPasswd)
+            errorMsg += "Invalid Password, cannot use default password!<br/>"; 
+        if(masterPasswd != confirmPasswd)
+            errorMsg += "Confirm password not matched<br/>"; 
+    }
     return errorMsg;
 }
 
@@ -1039,12 +1046,12 @@ bool WiFiMan::handleSerialSave(String args)
         printDebug("masterPasswd : " + masterPasswd,false);
         printDebug("confirmPasswd : " + confirmPasswd,false);
 
-        if(masterPasswd!=_masterPasswd)
-        {
-            printDebug("Master password not matched.",false);
-            Serial.println("$ Cannot save config.Master password not matched.");
-            return false;
-        }
+        //if(masterPasswd!=_masterPasswd)
+        //{
+        //    printDebug("Master password not matched.",false);
+        //    Serial.println("$ Cannot save config.Master password not matched.");
+        //    return false;
+        //}
 
         if(mqttId == "")
         {

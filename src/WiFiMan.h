@@ -58,16 +58,16 @@ class WiFiMan
     String _defaultMqttId = "esp8266";
 
     /* config , this data will be stored in config.json */
-    String _wifiSsid;
-    String _wifiPasswd;
-    String _mqttAddr;
-    String _mqttPort;
-    String _mqttUsername;
-    String _mqttPasswd;
-    String _mqttSub;
-    String _mqttPub;
-    String _mqttId;
-    String _masterPasswd;
+    String _wifiSsid = "";
+    String _wifiPasswd = "";
+    String _mqttAddr = "";
+    String _mqttPort = "";
+    String _mqttUsername = "";
+    String _mqttPasswd = "";
+    String _mqttSub = "";
+    String _mqttPub = "";
+    String _mqttId = "";
+    String _masterPasswd = "";
 
     //web ui 
     String _title = "ESP8266";
