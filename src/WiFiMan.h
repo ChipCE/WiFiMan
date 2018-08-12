@@ -48,7 +48,7 @@ class WiFiMan
 
     //password use in the first time login to config portal.This can be changed in config menu
     String _defaultHttpPasswd = "password";
-    //username to login (this cannot be changed later)
+    //username to login (this cannot be changed in config portal)
     String _httpUsername = "admin";
 
     //Ap setting 
