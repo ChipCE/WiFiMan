@@ -15,70 +15,97 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
 - <a href="https://github.com/bblanchon/ArduinoJson">bblanchon's ArduinoJson v5.13.2</a>
 
 ## API
-- Constructor 
-    WiFiMan(bool authentication,bool serialControl,bool debug);
-    WiFiMan(bool authentication,bool serialControl);
-    WiFiMan(bool authentication);
-    WiFiMan();
-    
-- Config portal
-    //enable/disable serial debug
-    void setDebug(bool enable);
-    //enable/disable webserver authentication
-    void setAuthentication(bool enable);
-    //set serial control
-    void setSerialControl(bool enable);
-    //force config mode 
-    void forceApMode();
-    //Change WebUI of config portal
-    void setWebUi(String title,String banner,String build,String branch,String deviceInfo,String footer);
-    //Change WebUI of config portal,deviceInfo will be fill with chipID
-    void setWebUi(String title,String banner,String build,String branch,String footer);
-    // set text of "help" page
-    void setHelpInfo(String helpInfo);
-    //set ap ip/subnet/gateway
-    void setApConfig(IPAddress ip,IPAddress gateway,IPAddress subnet);
-    //set max connect attempt
-    void setMaxConnectAttempt(int connectAttempt);
-    //set timeout of AP mode (min), server will turnoff after timeout
-    void setConfigTimeout(int timeout);
-    //set default ap SSID .in ap mode, SSID will be <apName>+<chipID>
-    void setApName(String apName);
-    //set softAP password 
-    void setApPasswd(String passwd);
-    //set password use in the first time login.This can be changed in config menu
-    void setHttpPassword(String passwd);
-    //set username to login (this cant be change later)
-    void setHttpUsername(String username);
-    //save config from json format
-    bool setJsonConfig(String args);
+### Constructor 
+- WiFiMan();   
+    Create default WiFiMan object without authentication,serial control and debug.
+    Authentication,serial control and debug can be set with WiFiMan(bool authentication,bool serialControl,bool debug); or enable using config portal APIs.   
+- WiFiMan(bool authentication);   
+- WiFiMan(bool authentication,bool serialControl,bool debug);   
+- WiFiMan(bool authentication,bool serialControl);   
+
+
+### Config portal
+- void setDebug(bool enable);   
+    Enable serial debug.
+- void setAuthentication(bool enable);   
+    Enable authentication for http access.
+- void setSerialControl(bool enable);   
+    Enable control via serial.
+- void forceApMode();   
+    Force device into Soft Access Point mode without trying to connect to saved config.
+- void setWebUi(String title,String banner,String build,String branch,String deviceInfo,String footer);   
+    Set web UI of config portal.
+- void setWebUi(String title,String banner,String build,String branch,String footer);   
+    Set web UI of config portal, deviceInfo field will be automatically filled with ESP8266 ChipID.
+- void setHelpInfo(String helpInfo);   
+    Set content of "/help" page.
+- void setApConfig(IPAddress ip,IPAddress gateway,IPAddress subnet);   
+    Set Soft AP IP,Gateway,Subnet.If not configured , the default value is 192.168.1.1 192.168.1.1 255.255.255.0
+- void setMaxConnectAttempt(int connectAttempt);   
+    Limit the max connect attemp to other AP in client mode.Default is 36.
+- void setConfigTimeout(int timeout);   
+    Set timeout limit of config portal in minute.Default is 15 minutes.
+- void setApName(String apName);  
+    Set soft AP SSID.Default is "esp8266-id[ChipID]"
+- void setApPasswd(String passwd);   
+    Set soft AP password.
+- void setHttpUsername(String username);   
+    Set config portal username
+- void setHttpPassword(String passwd);   
+    Set config portal password
   
-- Get config parameters
-    //get SSID
-    String getWifiSsid();
-    //get wifi password
-    String getWifiPasswd();
-    //get mqtt server address
-    String getMqttServerAddr();
-    //get mqtt server password
-    String getMqttServerPasswd();
-    //get mqtt server username
-    String getMqttUsername();
-    //get mqtt id
-    String getMqttId();
-    //get mqtt sub topic
-    String getMqttSub();
-    //get mqtt pub  topic 
-    String getMqttPub();
-    //get mqtt port
-    int getMqttPort();
-    //get soft AP ip 
-    IPAddress getSoftApIp();
-    //get ip in client mode
-    IPAddress getIp();
-    //get dns name 
-    String getDnsName();
-    //get device mac address
-    String getMacAddr();
-    //get all the config . return true if the config is valid(success connected to ap)
-    bool getConfig(Config *conf);
+### Get config parameters
+- String getWifiSsid();   
+    Get AP SSID
+- String getWifiPasswd();   
+    Get AP password
+- String getMqttServerAddr();   
+    Get mqtt server address
+- String getMqttServerPasswd();   
+    Get mqtt server password
+- String getMqttUsername();   
+    Get mqtt server username
+- String getMqttId();   
+    Get mqtt id
+- String getMqttSub();   
+    Get mqtt sub topic
+- String getMqttPub();   
+    Get mqtt pub  topic 
+- int getMqttPort();   
+    Get mqtt port
+- IPAddress getSoftApIp();   
+    Get soft AP ip 
+- IPAddress getIp();   
+    Get ip in client mode
+- String getDnsName();   
+    Get mDNS name 
+- String getMacAddr();   
+    Get device mac address
+- bool getConfig(Config *conf);   
+    Get all config parameters. Return true if the config is valid(success connected to ap)
+
+### Controls
+- void start();   
+    Start WiFiMan , all config API must be called before Start.
+- bool deleteConfig();   
+    Delete saved config file (config.json).
+- void disconnect();  
+    Force disconnect from AP.
+- bool isConnected();   
+    Check connection status.
+- int getStatus();   
+    Get device status   
+    - 0 INIT   
+    - 1 CONNECTING : AP mode,Trying to connect to AP   
+    - 2 CLIENT : Client mode,connected to AP   
+    - 3 AP : Soft AP mode   
+    - 4 TIMEOUT : Config portal timeout  
+    
+### Testing 
+//serial handler after connected to AP , msg must be json format   
+void handleSerial(String msg);   
+//auto handle , will read line from serial and execute valid command.Put this in loop function of main program   
+void handleSerial();   
+config device with json string instead of web config portal   
+bool setJsonConfig(String args);
+config device with json string instead of web config portal   
