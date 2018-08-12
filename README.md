@@ -32,8 +32,6 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
     Enable authentication for http access.
 - void setSerialControl(bool enable);   
     Enable control via serial.
-- void forceApMode();   
-    Force device into Soft Access Point mode without trying to connect to saved config.
 - void setWebUi(String title,String banner,String build,String branch,String deviceInfo,String footer);   
     Set web UI of config portal.
 - void setWebUi(String title,String banner,String build,String branch,String footer);   
@@ -87,9 +85,11 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
 
 ### Controls
 - void start();   
-    Start WiFiMan , all config API must be called before Start.
+    Start WiFiMan , all config API must be called before this function.
 - bool deleteConfig();   
-    Delete saved config file (config.json).
+    Delete saved config file (config.json).This must be called before call start().
+- void forceApMode();   
+    Force device into Soft Access Point mode without trying to connect to saved config.
 - void disconnect();  
     Force disconnect from AP.
 - bool isConnected();   
