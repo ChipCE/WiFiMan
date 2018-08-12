@@ -9,6 +9,7 @@
 #include <DNSServer.h>
 #include <ESP8266OTA.h>
 #include "WebUI.h"
+#include "Config.h"
 
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
@@ -204,6 +205,8 @@ class WiFiMan
     String getDnsName();
     //get device mac address
     String getMacAddr();
+    //get all the config . return true if the config is valid(success connected to ap)
+    bool getConfig(Config *conf);
 
 };
 #endif

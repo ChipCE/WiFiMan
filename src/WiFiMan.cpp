@@ -1238,3 +1238,45 @@ void WiFiMan::setHelpInfo(String helpInfo)
 {
     _helpInfo = helpInfo;
 }
+
+bool WiFiMan::getConfig(Config *conf)
+{
+    conf->wifiSsid = (char*)malloc((_wifiSsid.length()+1) * sizeof(char));
+    strcpy(conf->wifiSsid,_wifiSsid.c_str());
+
+    conf->wifiPasswd = (char*)malloc((_wifiPasswd.length()+1) * sizeof(char));
+    strcpy(conf->wifiPasswd,_wifiPasswd.c_str());
+    
+    conf->mqttAddr = (char*)malloc((_mqttAddr.length()+1) * sizeof(char));
+    strcpy(conf->mqttAddr,_mqttAddr.c_str());
+    
+    conf->mqttPort = _mqttPort.toInt();
+    
+    conf->mqttUsername = (char*)malloc((_mqttUsername.length()+1) * sizeof(char));
+    strcpy(conf->mqttUsername,_mqttUsername.c_str());
+    
+    conf->mqttPasswd = (char*)malloc((_mqttPasswd.length()+1) * sizeof(char));
+    strcpy(conf->mqttPasswd,_mqttPasswd.c_str());
+    
+    conf->mqttSub = (char*)malloc((_mqttSub.length()+1) * sizeof(char));
+    strcpy(conf->mqttSub,_mqttSub.c_str());
+    
+    conf->mqttPub = (char*)malloc((_mqttPub.length()+1) * sizeof(char));
+    strcpy(conf->mqttPub,_mqttPub.c_str());
+    
+    conf->mqttId = (char*)malloc((_mqttId.length()+1) * sizeof(char));
+    strcpy(conf->mqttId,_mqttId.c_str());
+    
+    conf->masterPasswd = (char*)malloc((_masterPasswd.length()+1) * sizeof(char));
+    strcpy(conf->masterPasswd,_masterPasswd.c_str());
+
+    String mdnsName = _mqttId + ".local";
+    conf->mdnsName = (char*)malloc((mdnsName.length()+1) * sizeof(char));
+    strcpy(conf->mdnsName,mdnsName.c_str());
+
+    conf->localIP = getIp();
+
+    if(WiFi.status() == WL_CONNECTED)
+        return true;
+    return false;
+}
