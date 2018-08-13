@@ -294,7 +294,7 @@ bool WiFiMan::clientMode()
 
 bool WiFiMan::apMode()
 {
-    Serial.println(_apIp.toString());
+    //Serial.println(_apIp.toString());
     printDebug("apMode",true);
     _mode = MODE::AP;
 
@@ -1064,7 +1064,12 @@ bool WiFiMan::handleSerialSave(String args)
         if( errorMsg == "")
         {   
             //arg seem ok ,save it
-            bool result = writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,masterPasswd);
+            bool result;
+            if(masterPasswd!="")
+                result = writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,masterPasswd);//change master password
+            else
+                result = writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,_masterPasswd);//keep old master password
+
             if(result)
             {
                 Serial.println("$ Config saved");
