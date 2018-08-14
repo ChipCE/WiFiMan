@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "typeinfo": "cpp",
+        "string_view": "cpp"
+    }
+}

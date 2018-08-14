@@ -251,6 +251,9 @@ bool WiFiMan::writeConfig(String wifiSsid,String wifiPasswd,String mqttAddr,Stri
 void WiFiMan::start()
 {
     printDebug("start",true);
+    //get boot mode
+    if(!FORCE_AP)
+        FORCE_AP = getBootMode();
     //read config file
     if(readConfig() && !FORCE_AP)
     {
@@ -369,8 +372,8 @@ bool WiFiMan::apMode()
             break;
 
         //handle  icomming serial
-        if(SERIALCONTROL)
-            handleSerial();
+        //if(SERIALCONTROL)
+        //    handleSerial();
 
         //handle web request
         dnsServer->processNextRequest();
@@ -443,7 +446,10 @@ void WiFiMan::handleConfig()
 
     printDebug("handleConfig",true);
     String page = FPSTR(HTTP_HEADER);
-    page=page + FPSTR(HTTP_CONFIG);
+    if(AUTHENTICATION)
+        page=page + FPSTR(HTTP_CONFIG_AUTH);
+    else
+        page=page + FPSTR(HTTP_CONFIG_NORM);
     page=page + FPSTR(HTTP_FOOTER);
     
     page.replace("{title}",_title);
@@ -524,8 +530,19 @@ void WiFiMan::handleSave()
     String mqttSub = webServer->arg("mqttSub").c_str();
     String mqttPub = webServer->arg("mqttPub").c_str();
     String mqttId = webServer->arg("mqttId").c_str();
-    String masterPasswd = webServer->arg("masterPasswd").c_str();
-    String confirmPasswd = webServer->arg("confirmPasswd").c_str();
+    String masterPasswd;
+    String confirmPasswd;
+
+    if(AUTHENTICATION)
+    {
+        masterPasswd = webServer->arg("masterPasswd").c_str();
+        confirmPasswd = webServer->arg("confirmPasswd").c_str();
+    }
+    else
+    {
+        masterPasswd = "";
+        confirmPasswd = "";
+    }
 
     printDebug("wifiSsid : " + wifiSsid,false);
     printDebug("wifiPasswd : " + wifiPasswd,false);
@@ -804,8 +821,8 @@ bool WiFiMan::validConfig()
         return false;
     if(_mqttPort == "")
         return false;
-    if(_masterPasswd == "")
-        return false;
+    //if(_masterPasswd == "")
+    //    return false;
     printDebug("Config OK!",false);
     return true;
 }
@@ -921,7 +938,7 @@ void WiFiMan::disconnect()
     WiFi.disconnect(); 
 }
 
-
+/*
 void WiFiMan::handleSerial()
 {
     //join serial characters to line
@@ -945,17 +962,13 @@ void WiFiMan::handleSerial()
         }
     }
 }
+*/
 
 
+/*
 void WiFiMan::handleSerial(String msg)
 {
-    //command in json format
-    /*
-    {
-        "command":"...", //canbe status,clear,save or reboot
-        "arg":{"wifiSsid":"Wifi-AP",...."confirmPasswd":"******"}
-    }
-    */
+    
     printDebug("handleSerial-command",true);
     DynamicJsonBuffer jsonBuffer;
     JsonObject& json = jsonBuffer.parseObject(msg);
@@ -1014,7 +1027,9 @@ void WiFiMan::handleSerial(String msg)
         printDebug("Invalid command format.",false);
     }
 }
+*/
 
+/*
 bool WiFiMan::handleSerialSave(String args)
 {
     printDebug("handleSerialSave",true);
@@ -1095,7 +1110,9 @@ bool WiFiMan::handleSerialSave(String args)
     }
     return true;
 }
+*/
 
+/*
 void WiFiMan::handleSerialStatus()
 {
     Serial.println("$******* IPMI status report *******");
@@ -1156,6 +1173,7 @@ void WiFiMan::handleSerialStatus()
             break;
     }
 }
+*/
 
 bool WiFiMan::isConnected()
 {
@@ -1291,4 +1309,52 @@ bool WiFiMan::getConfig(Config *conf)
     if(WiFi.status() == WL_CONNECTED)
         return true;
     return false;
+}
+
+bool WiFiMan::getBootMode()
+{
+    printDebug("getBootMode",true);
+    if(SPIFFS.begin())
+    {
+        if (SPIFFS.exists("/boot.conf")) 
+        {
+            SPIFFS.remove("/boot.conf");
+            SPIFFS.end();
+            return true;
+        }
+        else
+        {
+            SPIFFS.end();
+            return false;
+        }
+    }
+    else
+    {
+        printDebug("Failed to mount FS",false);
+        return false;
+    }
+}
+
+bool rebootToApMode()
+{
+    if(SPIFFS.begin())
+    {
+        File configFile = SPIFFS.open("/boot.conf", "w");
+        if (!configFile) 
+        {
+            SPIFFS.end();
+            return false;
+        }
+
+        configFile.print("skip-auto-connect");
+        configFile.close();
+        SPIFFS.end();
+        ESP.restart();
+        //program will not reach this return :3
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

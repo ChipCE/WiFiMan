@@ -1,16 +1,21 @@
 #include <WiFiMan.h>
-
-//WiFiMan must be declare as global var if you wand to use serialControl in loop()
-WiFiMan wman;
 Config conf;
 
 void setup() 
 {
-  //create wman object with serial control enabled
-  wman = WiFiMan(false,true,false);
+  //create default object
+  WiFiMan wman = WiFiMan();
+  //wman.deleteConfig();
+  wman.setDebug(true);
+
+  //Force esp8266 to config mode , forceApMode(); must be called before wman.start()
+  pinMode(13,INPUT_PULLUP);
+  if(digitalRead(13)==LOW)
+    wman.forceApMode();
+
+  pinMode(12,INPUT_PULLUP);
   
   wman.start();
-  //durring softAP mode , device will wait for serial command , and execute if the command is in valid format.Read "readme.md" for more information
 
   if(wman.getConfig(&conf))
   {
@@ -44,6 +49,6 @@ void setup()
 }
 
 void loop() {
-    //device will wait for serial command , and execute if the command is in valid format.Read "readme.md" for more information
-    wman.handleSerial();
+  if(digitalRead(12)==LOW)
+    rebootToApMode();
 }

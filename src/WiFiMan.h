@@ -118,9 +118,11 @@ class WiFiMan
     //connect to ap , send multicast dns for webserver if server is alive
     bool connect(String wifiSsid,String wifiPasswd);
     //handle save by serial
-    bool handleSerialSave(String args);
+    //bool handleSerialSave(String args);
     //handle serial stasus report
-    void handleSerialStatus();
+    //void handleSerialStatus();
+    //get boot mode, if true : skip auto connect, false : normal mode
+    bool getBootMode();
     
     
   public:
@@ -209,4 +211,9 @@ class WiFiMan
     bool getConfig(Config *conf);
 
 };
+
+
+// -----------------------------
+bool rebootToApMode();
+
 #endif
