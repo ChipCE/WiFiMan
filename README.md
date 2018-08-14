@@ -101,13 +101,15 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
     - 2 CLIENT : Client mode,connected to AP   
     - 3 AP : Soft AP mode   
     - 4 TIMEOUT : Config portal timeout  
+- rebootToApMode();
+Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 
 ### Reconfig esp8266 after connected to AP
 There are 2 way to reconfig ESP8266 after connected to Access Point.Use rebootToApMode() or .forceApMode().
 - <WiFiManClassName>.forceApMode()
 This method force WiFiMan to skip auto-connect and go straight to Config mode.forceApMode() must be called before .start() called.
 - rebootToApMode()
-Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when FiFiMan out of scoop.
+Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() may cause ESP8266 to crash at the first restart after serial flashing.For more information , please check [ESP8266 Issues](https://github.com/esp8266/Arduino/issues/1722)   
     
 ### Serial control
