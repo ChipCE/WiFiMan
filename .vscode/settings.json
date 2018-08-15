@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "typeinfo": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "sstream": "cpp",
+        "*.tcc": "cpp"
     }
 }

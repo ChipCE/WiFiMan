@@ -10,6 +10,7 @@
 #include <ESP8266OTA.h>
 #include "WebUI.h"
 #include "Config.h"
+#include "DebugHelper.h"
 
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
@@ -29,8 +30,9 @@ class WiFiMan
     int _action = 0;
 
     //for simple debug print
-    void printDebug(String msg,bool primary);
-    void printDebug(JsonObject& json);
+    //void printDebug(String msg,bool primary);
+    //void printDebug(JsonObject& json);
+    DebugHelper debugHelper;
     
     /* server config */
     //number of connect attempt to AP
