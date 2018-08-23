@@ -123,7 +123,7 @@ ESP8266 can be controlled by Serial command when in Config mode or/and in Client
 - #$> clear   
     Clear all saved setting and reboot ESP8266.
 ### Serial control in config mode
-Serial must be enabled by called <WiFiManager>.setSerialControl(true);.
+Serial must be enabled by called WiFiManObjectName.setSerialControl(true);.
 ### Serial control in client mode
 ESP8266 can be controlled by Serial command when in Client mode(connect to AP) by define SerialControl object and call <SerialControlObjectName>.handleSerial(); in loop function.
 
