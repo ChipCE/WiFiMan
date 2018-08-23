@@ -114,7 +114,8 @@ Global control functions are not member of WiFiMan class, and can be called anyw
     Clear all saved setting and reboot ESP8266.
 
 ## Serial control
-ESP8266 can be controlled by Serial command when in Config mode or/and in Client mode(need declare SerialController object ).
+ESP8266 can be controlled by Serial command when in Config mode or/and in Client mode(need declare SerialController object ).   
+*Serial baud rates : 115200
 ### Available commands
 - #$> reboot   
     Reboot ESP8266.
@@ -125,18 +126,18 @@ ESP8266 can be controlled by Serial command when in Config mode or/and in Client
 ### Serial control in config mode
 Serial must be enabled by called WiFiManObjectName.setSerialControl(true);.
 ### Serial control in client mode
-ESP8266 can be controlled by Serial command when in Client mode(connect to AP) by define SerialControl object and call <SerialControlObjectName>.handleSerial(); in loop function.
+ESP8266 can be controlled by Serial command when in Client mode(connect to AP) by define SerialControl object and call SerialControlObjectName.handleSerial(); in loop function.
 
 ## Q/A
 ### How to reconfig esp8266 after connected to AP?
 There are 2 way to reconfig ESP8266 after connected to Access Point.Use rebootToApMode() or .forceApMode().
-- <WiFiManClassName>.forceApMode()
+- .forceApMode()
 This method force WiFiMan to skip auto-connect and go straight to Config mode.forceApMode() must be called before .start() called.
 - rebootToApMode()
 Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() may cause ESP8266 to crash at the first restart after serial flashing.For more information , please check [ESP8266 Issues](https://github.com/esp8266/Arduino/issues/1722)   
     
-### What are #$<>! characters in Serial output messenger mean?
+### What are #$<>_ characters in Serial output messenger mean?
 - #>> (debug) Funtion has been called.   
 - #<< (debug) End of function.   
 - #__ (debug) Debug output.   

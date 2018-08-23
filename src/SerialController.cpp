@@ -7,11 +7,11 @@ SerialController::SerialController()
     {
         Serial.begin(115200);
         serialBuffer = "";
+        //clear unwanted buffer
+        Serial.flush();
+        while(Serial.available() > 0)
+            char t = Serial.read();
     }
-    //clear unwanted buffer
-    Serial.flush();
-    while(Serial.available() > 0)
-        char t = Serial.read();
 }
 
 SerialController::SerialController(bool enable)
@@ -21,11 +21,11 @@ SerialController::SerialController(bool enable)
     {
         Serial.begin(115200);
         serialBuffer = "";
+        //clear unwanted buffer
+        Serial.flush();
+        while(Serial.available() > 0)
+            char t = Serial.read();
     }
-    //clear unwanted buffer
-    Serial.flush();
-    while(Serial.available() > 0)
-        char t = Serial.read();
 }
 
 

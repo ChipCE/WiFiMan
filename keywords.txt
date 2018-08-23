@@ -42,3 +42,7 @@ getMqttPort	KEYWORD2
 getIp	KEYWORD2
 getDnsName	KEYWORD2
 getMacAddr	KEYWORD2
+getConfig	KEYWORD2
+rebootToApMode	KEYWORD2
+clear	KEYWORD2
+reboot	KEYWORD2
