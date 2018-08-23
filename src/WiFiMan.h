@@ -121,10 +121,6 @@ class WiFiMan
     String checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,String mqttPort,String mqttUsername,String mqttPasswd,String mqttSub,String mqttPub,String mqttId,String masterPasswd,String confirmPasswd); 
     //connect to ap , send multicast dns for webserver if server is alive
     bool connect(String wifiSsid,String wifiPasswd);
-    //handle save by serial
-    //bool handleSerialSave(String args);
-    //handle serial stasus report
-    //void handleSerialStatus();
     //get boot mode, if true : skip auto connect, false : normal mode
     bool getBootMode();
     
@@ -208,7 +204,4 @@ class WiFiMan
     bool getConfig(Config *conf);
 
 };
-
-
-
 #endif
