@@ -176,10 +176,8 @@ class WiFiMan
     void setHttpPassword(String passwd);
     //set username to login (this cant be change later)
     void setHttpUsername(String username);
-    //save config from json format
-    bool setJsonConfig(String args);
-    
 
+    
     //get SSID
     String getWifiSsid();
     //get wifi password
