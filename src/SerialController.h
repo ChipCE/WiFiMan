@@ -12,6 +12,7 @@ class SerialController
     public:
         SerialController();
         SerialController(bool enable);
+        SerialController(bool enable,bool ignoreInvalid);
         void handleSerial();
         bool executeCommand();
 };

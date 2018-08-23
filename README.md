@@ -104,7 +104,29 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
 - rebootToApMode();
 Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 
-### Reconfig esp8266 after connected to AP
+### Global controls
+Global control functions are not member of WiFiMan class, and can be called anywhere in sketch.
+- bool reboot()   
+    Reboot ESP8266.
+- bool rebootToApMode()   
+    Reboot ESP8266 and go straight to Config mode without trying to auto-connect using saved setting.
+- bool clear()   
+    Clear all saved setting and reboot ESP8266.
+
+### Serial control
+ESP8266 can be controlled by Serial command when in Config mode
+#### Available commands
+- #$> reboot   
+    Reboot ESP8266.
+- #$> config   
+    Reboot ESP8266 and go straight to Config mode without trying to auto-connect using saved setting.
+- #$> clear   
+    Clear all saved setting and reboot ESP8266.
+#### Serial control in client mode
+ESP8266 can be controlled by Serial command when in Client mode(connect to AP) by define SerialControl object and call <SerialControlObjectName>.handleSerial(); in loop function.
+
+## Q/A
+### How to reconfig esp8266 after connected to AP?
 There are 2 way to reconfig ESP8266 after connected to Access Point.Use rebootToApMode() or .forceApMode().
 - <WiFiManClassName>.forceApMode()
 This method force WiFiMan to skip auto-connect and go straight to Config mode.forceApMode() must be called before .start() called.
@@ -112,6 +134,10 @@ This method force WiFiMan to skip auto-connect and go straight to Config mode.fo
 Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() may cause ESP8266 to crash at the first restart after serial flashing.For more information , please check [ESP8266 Issues](https://github.com/esp8266/Arduino/issues/1722)   
     
-### Serial control
-Serial control is temporarily disabled in v1.0.4 .
-I'm working on new way to config esp8266 via serial .The new method will be easier to use and more memory efficient.Serial control will be bring back in v1.0.5
+### What are #$<>! characters in Serial output messenger mean?
+- #>> (debug) Funtion has been called.   
+- #<< (debug) End of function.   
+- #__ (debug) Debug output.   
+- #>< (debug) Funtion without debug output has been called.   
+- #$> (serial-control) Execute serial command. Usage : "#$> <command>" , Ex "#$> reboot".   
+- #$< (serial-control) Result when execute serial command.   

@@ -1,5 +1,10 @@
 #include "Boot.h"
 
+void reboot()
+{
+    ESP.restart();
+}
+
 bool rebootToApMode()
 {
     if(SPIFFS.begin())

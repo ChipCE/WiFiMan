@@ -5,4 +5,5 @@
 
 bool rebootToApMode();
 bool clear();
+bool reboot();
 #endif

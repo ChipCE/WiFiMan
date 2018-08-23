@@ -28,6 +28,7 @@ SerialController::SerialController(bool enable)
         char t = Serial.read();
 }
 
+
 void SerialController::handleSerial()
 {
     if(ENABLE)
@@ -41,6 +42,7 @@ void SerialController::handleSerial()
             // Process message when new line character is recieved
             if ((recievedChar == '\n') || (recievedChar == '\r'))
             {
+                serialBuffer += '\0';
                 executeCommand();
                 serialBuffer = ""; 
             }

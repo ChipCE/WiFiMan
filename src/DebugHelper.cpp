@@ -25,7 +25,7 @@ void DebugHelper::println(String msg)
 {
     if(DEBUG)
     {
-        String debugMsg = "#  ";
+        String debugMsg = "#__";
         for(int i=0;i<=callLevel;i++)
             debugMsg += "  ";
         debugMsg += msg;
@@ -37,7 +37,7 @@ void DebugHelper::println(const char *msg)
 {
     if(DEBUG)
     {
-        String debugMsg = "#  ";
+        String debugMsg = "#__";
         for(int i=0;i<=callLevel;i++)
             debugMsg += "  ";
         debugMsg += msg;
