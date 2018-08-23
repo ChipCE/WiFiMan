@@ -113,16 +113,16 @@ Global control functions are not member of WiFiMan class, and can be called anyw
 - bool clear()   
     Clear all saved setting and reboot ESP8266.
 
-### Serial control
+## Serial control
 ESP8266 can be controlled by Serial command when in Config mode
-#### Available commands
+### Available commands
 - #$> reboot   
     Reboot ESP8266.
 - #$> config   
     Reboot ESP8266 and go straight to Config mode without trying to auto-connect using saved setting.
 - #$> clear   
     Clear all saved setting and reboot ESP8266.
-#### Serial control in client mode
+### Serial control in client mode
 ESP8266 can be controlled by Serial command when in Client mode(connect to AP) by define SerialControl object and call <SerialControlObjectName>.handleSerial(); in loop function.
 
 ## Q/A
