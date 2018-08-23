@@ -139,5 +139,5 @@ Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() 
 - #<< (debug) End of function.   
 - #__ (debug) Debug output.   
 - #>< (debug) Funtion without debug output has been called.   
-- #$> (serial-control) Execute serial command. Usage : "#$> <command>" , Ex "#$> reboot".   
+- #$> (serial-control) Execute serial command. Ex "#$> reboot".   
 - #$< (serial-control) Result when execute serial command.   
