@@ -1,5 +1,5 @@
 # WiFiMan
-Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OTA update,config via serial   
+Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OTA update,control via serial.  
 
 ## About password setting
 - Soft AP password : Password of ESP8266 when in AP mode .Can be set with setApPasswd("yourPassword").If default password is not set, AP will fireup without password.
