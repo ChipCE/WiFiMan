@@ -39,6 +39,7 @@ void setup()
     Serial.print("IP : ");
     Serial.println(conf.localIP);
   }
+  delay(100);
   sc = SerialController(true);
 }
 
