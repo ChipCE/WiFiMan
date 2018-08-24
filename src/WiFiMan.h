@@ -11,6 +11,8 @@
 #include "WebUI.h"
 #include "Config.h"
 #include "DebugHelper.h"
+#include "SerialController.h"
+#include "Boot.h"
 
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
@@ -30,9 +32,9 @@ class WiFiMan
     int _action = 0;
 
     //for simple debug print
-    //void printDebug(String msg,bool primary);
-    //void printDebug(JsonObject& json);
     DebugHelper debugHelper;
+    //Serial controller
+    SerialController serialController;
     
     /* server config */
     //number of connect attempt to AP
@@ -145,11 +147,6 @@ class WiFiMan
     //get device mode
     int getStatus();
     
-    //serial handler after connected to AP , msg must be json format
-    void handleSerial(String msg);
-    //auto handle , will read line from serial and execute valid command.Put this in loop function of main program
-    void handleSerial();
-
 
     //enable/disable serial debug
     void setDebug(bool enable);
@@ -215,7 +212,5 @@ class WiFiMan
 };
 
 
-// -----------------------------
-bool rebootToApMode();
 
 #endif

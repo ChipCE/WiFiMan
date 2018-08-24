@@ -21,10 +21,6 @@ WiFiMan::WiFiMan(bool authentication,bool serialControl,bool debug)
     AUTHENTICATION=authentication;
     SERIALCONTROL=serialControl;
     WiFi.disconnect();
-    //Serial.begin(115200);
-    //printDebug("\n",true);
-    //printDebug("start",true);
-    //printDebug("Booting sketch...",false);
 }
 
 
@@ -266,6 +262,7 @@ void WiFiMan::start()
 {
     debugHelper = DebugHelper(DEBUG);
     debugHelper.printFunctionCall("start");
+    serialController = SerialController(SERIALCONTROL);
     //get boot mode
     if(!FORCE_AP)
         FORCE_AP = getBootMode();
@@ -411,13 +408,11 @@ bool WiFiMan::apMode()
         if(WiFi.status() == WL_CONNECTED)
             break;
 
-        //handle  icomming serial
-        //if(SERIALCONTROL)
-        //    handleSerial();
 
         //handle web request
         dnsServer->processNextRequest();
         webServer->handleClient();
+        serialController.handleSerial();
     }
 
     WiFi.softAPdisconnect(true);
@@ -1405,26 +1400,3 @@ bool WiFiMan::getBootMode()
     }
 }
 
-bool rebootToApMode()
-{
-    if(SPIFFS.begin())
-    {
-        File configFile = SPIFFS.open("/boot.conf", "w");
-        if (!configFile) 
-        {
-            SPIFFS.end();
-            return false;
-        }
-
-        configFile.print("skip-auto-connect");
-        configFile.close();
-        SPIFFS.end();
-        ESP.restart();
-        //program will not reach this return :3
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
