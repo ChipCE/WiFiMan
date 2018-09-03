@@ -138,9 +138,9 @@ Reboot esp8266 and go to config mode.This method is not a member of WiFiMan clas
 Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() may cause ESP8266 to crash at the first restart after serial flashing.For more information , please check [ESP8266 Issues](https://github.com/esp8266/Arduino/issues/1722)   
     
 ### What are #$<>_ characters in Serial output messenger mean?
-- #>> (debug) Funtion has been called.   
+- #>> (debug) Function has been called.   
 - #<< (debug) End of function.   
 - #__ (debug) Debug output.   
-- #>< (debug) Funtion without debug output has been called.   
+- #>< (debug) Function without debug output has been called.   
 - #$> (serial-control) Execute serial command. Ex "#$> reboot".   
 - #$< (serial-control) Result when execute serial command.   
