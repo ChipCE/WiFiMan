@@ -51,7 +51,7 @@ class WiFiMan
     String serialBuffer = "";
 
     //password use in the first time login to config portal.This can be changed in config menu
-    String _defaultHttpPasswd = "password";
+    String _defaultMasterPasswd = "password";
     //username to login (this cannot be changed in config portal)
     String _httpUsername = "admin";
 
@@ -134,7 +134,7 @@ class WiFiMan
 
     //start wifi manager 
     void start();
-    //delete config.json .Call this method before start() to reset all setting
+    //delete config.json .Call this method before start() to clear all setting
     bool deleteConfig();
     //for disconnect from AP
     void disconnect();
@@ -169,9 +169,9 @@ class WiFiMan
     //set softAP password 
     void setApPasswd(String passwd);
     //set password use in the first time login.This can be changed in config menu
-    void setHttpPassword(String passwd);
-    //set username to login (this cant be change later)
-    void setHttpUsername(String username);
+    void setDefaultMasterPasswd(String passwd);
+    //set username to login (this cant be changed later)
+    void setMasterUsername(String username);
 
     
     //get SSID

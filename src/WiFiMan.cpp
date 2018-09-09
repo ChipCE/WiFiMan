@@ -750,9 +750,9 @@ const char* WiFiMan::getApPassword()
         debugHelper.printLastMsg("getApPassword-end");
         return _masterPasswd.c_str();
     }
-    debugHelper.println("Return password : "+_defaultHttpPasswd);
+    debugHelper.println("Return password : "+_defaultMasterPasswd);
     debugHelper.printLastMsg("getApPassword-end");
-    return _defaultHttpPasswd.c_str();
+    return _defaultMasterPasswd.c_str();
 }
 
 String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,String mqttPort,String mqttUsername,String mqttPasswd,String mqttSub,String mqttPub,String mqttId,String masterPasswd,String confirmPasswd)
@@ -774,7 +774,7 @@ String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,Str
     {
         if(_masterPasswd=="" &&  masterPasswd =="")
             errorMsg += "New master password mut be set!<br/>"; 
-        if(masterPasswd == _defaultHttpPasswd)
+        if(masterPasswd == _defaultMasterPasswd)
             errorMsg += "Invalid Password, cannot use default password!<br/>"; 
         if(masterPasswd != confirmPasswd)
             errorMsg += "Confirm password not matched<br/>"; 
@@ -948,12 +948,12 @@ void WiFiMan::setApPasswd(String passwd)
     _apPasswd = passwd;
 }
 //set password use in the first time login.This can be changed in config menu
-void WiFiMan::setHttpPassword(String passwd)
+void WiFiMan::setDefaultMasterPasswd(String passwd)
 {
-    _defaultHttpPasswd = passwd;
+    _defaultMasterPasswd = passwd;
 }
 //set username to login (this cant be change later)
-void WiFiMan::setHttpUsername(String username)
+void WiFiMan::setMasterUsername(String username)
 {
     _httpUsername = username;
 }

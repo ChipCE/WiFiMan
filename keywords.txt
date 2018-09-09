@@ -7,6 +7,8 @@
 #######################################
 
 WiFiMan	KEYWORD1
+Config	KEYWORD1
+SerialController	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -28,8 +30,8 @@ setMaxConnectAttempt	KEYWORD2
 setConfigTimeout	KEYWORD2
 setApName	KEYWORD2
 setApPasswd	KEYWORD2
-setHttpPassword	KEYWORD2
-setHttpUsername	KEYWORD2
+setMasterUsername	KEYWORD2
+setDefaultMasterPasswd	KEYWORD2
 getWifiSsid	KEYWORD2
 getWifiPasswd	KEYWORD2
 getMqttServerAddr	KEYWORD2

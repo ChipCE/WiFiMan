@@ -1,11 +1,6 @@
 # WiFiMan
 Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OTA update,control via serial.  
 
-## About password setting
-- Soft AP password : Password of ESP8266 when in AP mode .Can be set with setApPasswd("yourPassword").If default password is not set, AP will fireup without password.
-- HTTP access password : Password use to access HTTP config page.Default password and username can be set with setHttpPassword("youPassword") and setHttpUsername("yourUsername").If authentication is not enabled,HTTP config portal can be access without authentication.If default password is not set the default password will be "password". After masterPassword is set, HTTP access will use masterPassword instead of defaultHttpPassword
-- Master password : password to access HTTP config portal.This password must be change after first login.
-*If master password has been changed.In config portal ,leave "New password" and "Confirm password" fields empty will keep the old password without change it.
 
 ## How to install 
 - Method 1 : Install from Arduino IDE library manager 
@@ -14,6 +9,11 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
 ## Require library
 - <a href="https://github.com/ChipTechno/ESP8266OTA">ESP8266OTA</a>
 - <a href="https://github.com/bblanchon/ArduinoJson">bblanchon's ArduinoJson v5.13.2</a>
+
+## About password setting
+- Soft AP password : Password of ESP8266 when in AP mode .Can be set with setApPasswd("yourPassword").If default password is not set, AP will fireup without password.
+- Master password : password to access HTTP config portal.This password must be change after first login. Default master username and password can be set with setMasterUsername("yourUsername") and setDefaultMasterPasswd("your-password").If default username and password are not set , their value will be "admin" and "password".
+*To keep old password ,leave "New password" and "Confirm password" fields empty(config page).
 
 ## API
 ### Constructor 
@@ -39,19 +39,19 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
 - void setHelpInfo(String helpInfo);   
     Set content of "/help" page.
 - void setApConfig(IPAddress ip,IPAddress gateway,IPAddress subnet);   
-    Set Soft AP IP,Gateway,Subnet.If not configured , the default value is 192.168.1.1 192.168.1.1 255.255.255.0
+    Set Soft AP IP,Gateway,Subnet.If not configured , the default value is 192.168.1.1 192.168.1.1 255.255.255.0 .
 - void setMaxConnectAttempt(int connectAttempt);   
     Limit the max connect attemp to other AP in client mode.Default is 36.
 - void setConfigTimeout(int timeout);   
     Set timeout limit of config portal in minute.Default is 15 minutes.
 - void setApName(String apName);  
-    Set soft AP SSID.Default is "esp8266-id[ChipID]"
+    Set soft AP SSID.Default is "esp8266-id[ChipID]".
 - void setApPasswd(String passwd);   
     Set soft AP password.
-- void setHttpUsername(String username);   
-    Set config portal username
-- void setHttpPassword(String passwd);   
-    Set config portal password
+- void setMasterUsername(String username);   
+    Set config portal username.
+- void setDefaultMasterPasswd(String passwd);   
+    Set config portal default password.
   
 ### Get config parameters
 - String getWifiSsid();   

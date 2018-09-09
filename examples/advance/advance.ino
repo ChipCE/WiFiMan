@@ -18,9 +18,9 @@ void setup()
     //enable webserver authentication.If the username and password are not set , ap will use default value "admin":"password"
     wman.setAuthentication(true);
     //set username to login (this CANNOT be change later).default is "admin"
-    wman.setHttpUsername("user");
+    wman.setMasterUsername("user");
     //set password use in the first time login.This can be changed in config menu.Default is "password"
-    wman.setHttpPassword("httpPassword");
+    wman.setDefaultMasterPasswd("httpPassword");
 
     //force config mode .Device will skip auto connect and jump straid into softAP mode(config portal)
     //wman.forceApMode();
