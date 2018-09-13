@@ -77,6 +77,13 @@ bool SerialController::executeCommand()
         return true;
     }
 
+    if(strncmp(serialBuffer.c_str(),"#$> status",10)==0)
+    {
+        Serial.println("#$< Generic IPMI : Config mode");
+        serialBuffer = "";
+        return true;
+    }
+
     Serial.println("#$< Invalid command");
     serialBuffer = "";
     return false;
