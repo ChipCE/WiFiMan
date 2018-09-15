@@ -49,7 +49,7 @@ bool WiFiMan::deleteConfig()
         }
         else
         {
-            debugHelper.println("Cannot eleted config.json");
+            debugHelper.println("Cannot delete config.json");
             debugHelper.printLastMsg("deleteConfig-end");
             return false;
         }
@@ -779,7 +779,8 @@ String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,Str
         if(masterPasswd != confirmPasswd)
             errorMsg += "Confirm password not matched<br/>"; 
     }
-    debugHelper.println("Error : "+errorMsg);
+    if(errorMsg!="")
+        debugHelper.println("Error : "+errorMsg);
     debugHelper.printLastMsg("checkInput-end");
     return errorMsg;
 }
