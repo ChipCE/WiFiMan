@@ -52,7 +52,7 @@ void DebugHelper::printJson(JsonObject &json)
         printFunctionCall("printJson");
         if(json.success())
         {
-            String spacer = "\n#  ";
+            String spacer = "\n#__";
             for(int i=0;i<=callLevel;i++)
                 spacer += "  ";
             String str;
