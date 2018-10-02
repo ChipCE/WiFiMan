@@ -58,6 +58,8 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
     Get AP SSID
 - String getWifiPasswd();   
     Get AP password
+- IPAddress getSoftApIp();   
+    Get soft AP ip 
 - String getMqttServerAddr();   
     Get mqtt server address
 - String getMqttServerPasswd();   
@@ -72,8 +74,6 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
     Get mqtt pub  topic 
 - int getMqttPort();   
     Get mqtt port
-- IPAddress getSoftApIp();   
-    Get soft AP ip 
 - IPAddress getIp();   
     Get ip in client mode
 - String getDnsName();   
@@ -101,12 +101,10 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
     - 2 CLIENT : Client mode,connected to AP   
     - 3 AP : Soft AP mode   
     - 4 TIMEOUT : Config portal timeout  
-- rebootToApMode();
-Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 
 ### Global controls
 Global control functions are not member of WiFiMan class, and can be called anywhere in sketch.
-- bool reboot()   
+- void reboot()   
     Reboot ESP8266.
 - bool rebootToApMode()   
     Reboot ESP8266 and go straight to Config mode without trying to auto-connect using saved setting.
