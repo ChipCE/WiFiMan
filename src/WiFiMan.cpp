@@ -436,6 +436,9 @@ void WiFiMan::handleRoot()
     page.replace("{branch}",_branch);
     page.replace("{deviceInfo}",_deviceInfo);
     page.replace("{footer}",_footer);
+
+    page = applyTheme(page);
+
     webServer->send ( 200, "text/html", page );
 }
 
@@ -462,6 +465,9 @@ void WiFiMan::handleConfig()
     page.replace("{branch}",_branch);
     page.replace("{deviceInfo}",_deviceInfo);
     page.replace("{footer}",_footer);
+    
+    page = applyTheme(page);
+
     webServer->send ( 200, "text/html", page );
 }
 
@@ -486,6 +492,9 @@ void WiFiMan::handleClearSetting()
     page.replace("{footer}",_footer);
     page.replace("{url}","/");
     page.replace("{delay}","15");
+
+    page = applyTheme(page);
+
     webServer->send ( 200, "text/html", page );
     webServer->client().stop();
     _action = ACTION_TYPE::CLEAR_CONFIG;
@@ -512,6 +521,9 @@ void WiFiMan::handleReset()
     page.replace("{footer}",_footer);
     page.replace("{url}","/");
     page.replace("{delay}","15");
+
+    page = applyTheme(page);
+
     webServer->send ( 200, "text/html", page );
     _action = ACTION_TYPE::SYS_RESET;
 }
@@ -593,6 +605,9 @@ void WiFiMan::handleSave()
         page.replace("{footer}",_footer);
         page.replace("{url}","/");
         page.replace("{delay}","15");
+
+        page = applyTheme(page);
+
         webServer->send ( 200, "text/html", page );
         _action = ACTION_TYPE::CONFIG_SAVED;
 
@@ -616,6 +631,9 @@ void WiFiMan::handleSave()
         page.replace("{branch}",_branch);
         page.replace("{deviceInfo}",_deviceInfo);
         page.replace("{footer}",_footer);
+
+        page = applyTheme(page);
+
         webServer->send ( 200, "text/html", page );
         debugHelper.printLastMsg("handleSave-end");
         return;
@@ -640,6 +658,8 @@ void WiFiMan::handlePortal()
         page.replace("{deviceInfo}",_deviceInfo);
         page.replace("{footer}",_footer);
         page.replace("{ip}",_apIp.toString());
+
+        page = applyTheme(page);
 
         webServer->send ( 200, "text/html", page );
     }
@@ -668,6 +688,9 @@ void WiFiMan::handleHelp()
     page.replace("{footer}",_footer);
     page.replace("{url}","/");
     page.replace("{delay}","15");
+
+    page = applyTheme(page);
+
     webServer->send ( 200, "text/html", page );
 }
 
@@ -1050,3 +1073,25 @@ bool WiFiMan::getBootMode()
     }
 }
 
+String WiFiMan::applyTheme(String pageStr)
+{
+    String page = pageStr;
+    
+    page.replace("{body-text-color}",FPSTR(body_text_color));
+    page.replace("{body-background-image}",FPSTR(body_background_image));
+    page.replace("{body-background-color}",FPSTR(body_background_color));
+    
+    page.replace("{button-text-color}",FPSTR(button_text_color));
+    page.replace("{button-background-image}",FPSTR(button_background_image));
+    page.replace("{button-backround-color}",FPSTR(button_backround_color));
+
+    page.replace("{header-text-color}",FPSTR(header_text_color));
+    page.replace("{header-background-image}",FPSTR(header_background_image));
+    page.replace("{header-background-color}",FPSTR(header_background_color));
+
+    page.replace("{footer-text-color}",FPSTR(footer_text_color));
+    page.replace("{footer-background-image}",FPSTR(footer_background_image));
+    page.replace("{footer-background-color}",FPSTR(footer_background_color));
+
+    return page;
+}

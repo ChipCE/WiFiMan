@@ -13,6 +13,7 @@
 #include "DebugHelper.h"
 #include "SerialController.h"
 #include "Boot.h"
+#include "Theme.h"
 
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
@@ -81,6 +82,8 @@ class WiFiMan
     String _deviceInfo = "ChipId : " + String(ESP.getChipId());
     String _footer = "ESP8266 WiFiMan";
     String _helpInfo = "Please visit homepage for more information!";
+    //apply themes
+    String applyTheme(String pageStr);
 
     //controller objects
     std::unique_ptr<DNSServer> dnsServer;
