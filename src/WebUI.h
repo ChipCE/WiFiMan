@@ -12,4 +12,8 @@ const char HTTP_INFO[] PROGMEM = "<br/>{info}";
 const char HTTP_EDIT[] PROGMEM = "<br/>{info}<br/><br/><button onclick=\"goBack()\">Edit config</button>";
 const char HTTP_PORTAL[] PROGMEM = "<br><h2 style=\"text-align: center\">Captive Portal</h2><br/><p>Please visit {ip} in your browser to config this device.</p>";
 const char HTTP_HELP[] PROGMEM = "<br/>{helpInfo}";
+
+const char HTTP_UPDATER_INDEX[] PROGMEM = "<form method='POST' action='' enctype='multipart/form-data'><input type='file' name='update'><br/><br/><input type='submit' value='Update'></form>";
+const char HTTP_UPDATER_SUCCESS[] PROGMEM = "<h2>Update Success!</h2><br/><h2>Rebooting...</h2>";
+const char HTTP_UPDATER_FAILED[] PROGMEM = "<h2>Update failed !</h2><br/><h2>Rebooting...</h2>";
 #endif

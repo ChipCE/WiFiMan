@@ -1,13 +1,19 @@
 # WiFiMan
 Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OTA update,control via serial.  
 
+## Notice
+### Change in v1.1.0
+- Merge ESP8266OTA with WiFiMan 
+If you have the old ESP8266OTA library installed, please remove it to avoid conflig with new WiFiMan library.   
+- Rework with Web UI for more customizable and better memory usage.
+UI text color and backdround now can be customized.Change the color value of your choice in Theme.h file.   
+Some sample of Theme.h are available in themes folder.New themes will be added later.   
 
 ## How to install 
 - Method 1 : Install from Arduino IDE library manager 
 - Method 2 : Manual download/clone this repo and put in arduino library folder
 
 ## Require library
-- <a href="https://github.com/ChipTechno/ESP8266OTA">ESP8266OTA</a>
 - <a href="https://github.com/bblanchon/ArduinoJson">bblanchon's ArduinoJson v5.13.2</a>
 
 ## About password setting

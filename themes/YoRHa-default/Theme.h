@@ -7,15 +7,15 @@ const char body_background_image[] PROGMEM = "background-image:url(\"data:image/
 const char body_background_color[] PROGMEM = " ";
 const char body_text_color[] PROGMEM = "color:#545147;";
 
-const char button_background_image[] PROGMEM = " ";
+const char button_background_image[] PROGMEM = "background-image:none;";
 const char button_backround_color[] PROGMEM = "background-color:#b2ad98;";
 const char button_text_color[] PROGMEM = "color:#545147;";
 
-const char header_background_image[] PROGMEM = "background-image:url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAB3RJTUUH4gUQDDYwqX6QewAAAA1JREFUCNdjMDXWOwMAApoBY44cvvsAAAAASUVORK5CYII=\");";
-const char header_background_color[] PROGMEM = " ";
+const char header_background_image[] PROGMEM = "background-image:none;";
+const char header_background_color[] PROGMEM = "background-color:rgb(82,80,71,0.8);";
 const char header_text_color[] PROGMEM = "color:#cbc6af;";
 
-const char footer_background_image[] PROGMEM = "background-image:url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAB3RJTUUH4gUQDDg61yhU6wAAAA1JREFUCNdjMDXWSwMAAjQA/b8+kbgAAAAASUVORK5CYII=\");";
-const char footer_background_color[] PROGMEM = " ";
+const char footer_background_image[] PROGMEM = "background-image:none;";
+const char footer_background_color[] PROGMEM = "background-color:rgb(82,80,71,0.6);";
 const char footer_text_color[] PROGMEM = "color:#292723;";
 #endif

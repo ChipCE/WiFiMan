@@ -426,6 +426,7 @@ void WiFiMan::handleNotFound()
     page.replace("{branch}",_branch);
     page.replace("{deviceInfo}",_deviceInfo);
     page.replace("{footer}",_footer);
+
     webServer->send ( 404, "text/html", page );
 }
 
@@ -1095,22 +1096,23 @@ bool WiFiMan::getBootMode()
 String WiFiMan::applyTheme(String pageStr)
 {
     String page = pageStr;
-    
+    DEBUG_MSG("#>< Apply theme\n");
+
     page.replace("{body-text-color}",FPSTR(body_text_color));
-    page.replace("{body-background-image}",FPSTR(body_background_image));
     page.replace("{body-background-color}",FPSTR(body_background_color));
+    page.replace("{body-background-image}",FPSTR(body_background_image));
     
     page.replace("{button-text-color}",FPSTR(button_text_color));
-    page.replace("{button-background-image}",FPSTR(button_background_image));
     page.replace("{button-backround-color}",FPSTR(button_backround_color));
+    page.replace("{button-background-image}",FPSTR(button_background_image));
 
     page.replace("{header-text-color}",FPSTR(header_text_color));
-    page.replace("{header-background-image}",FPSTR(header_background_image));
     page.replace("{header-background-color}",FPSTR(header_background_color));
-
+    page.replace("{header-background-image}",FPSTR(header_background_image));
+    
     page.replace("{footer-text-color}",FPSTR(footer_text_color));
-    page.replace("{footer-background-image}",FPSTR(footer_background_image));
     page.replace("{footer-background-color}",FPSTR(footer_background_color));
+    page.replace("{footer-background-image}",FPSTR(footer_background_image));
 
     return page;
 }
