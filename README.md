@@ -19,15 +19,12 @@ Wifi manager for ESP8266 with configurable web UI and ability to config mqtt, OT
 ### Constructor 
 - WiFiMan();   
     Create default WiFiMan object without authentication,serial control and debug.
-    Authentication,serial control and debug can be set with WiFiMan(bool authentication,bool serialControl,bool debug); or enable using config portal APIs.   
+    Authentication and serial control can be set with WiFiMan(bool authentication,bool serialControl); or enable using config portal APIs.   
 - WiFiMan(bool authentication);   
-- WiFiMan(bool authentication,bool serialControl,bool debug);   
 - WiFiMan(bool authentication,bool serialControl);   
 
 
 ### Config portal
-- void setDebug(bool enable);   
-    Enable serial debug.
 - void setAuthentication(bool enable);   
     Enable authentication for http access.
 - void setSerialControl(bool enable);   
@@ -111,6 +108,10 @@ Global control functions are not member of WiFiMan class, and can be called anyw
 - bool clear()   
     Clear all saved setting and reboot ESP8266.
 
+### Theming
+- UI texts can be set with setWebUi(...).
+- UI color and backdround can be edit in Theme.h file.
+
 ## Serial control
 ESP8266 can be controlled by Serial command when in Config mode or/and in Client mode(need declare SerialController object ).   
 *Serial baud rates : 115200
@@ -127,6 +128,9 @@ Serial must be enabled by called WiFiManObjectName.setSerialControl(true);.
 ESP8266 can be controlled by Serial command when in Client mode(connect to AP) by define SerialControl object and call SerialControlObjectName.handleSerial(); in loop function.
 
 ## Q/A
+### How to enable debug
+Enable Debug port in Arduino IDE (Tools > Debug port)
+
 ### How to reconfig esp8266 after connected to AP?
 There are 2 way to reconfig ESP8266 after connected to Access Point.Use rebootToApMode() or .forceApMode().
 - .forceApMode()

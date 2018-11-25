@@ -2,22 +2,16 @@
 
 WiFiMan::WiFiMan()
 {
-    WiFiMan(false,false,false);
+    WiFiMan(false,false);
 }
 
 WiFiMan::WiFiMan(bool Authentication)
 {
-    WiFiMan(Authentication,false,false);
+    WiFiMan(Authentication,false);
 }
 
 WiFiMan::WiFiMan(bool authentication,bool serialControl)
 {
-    WiFiMan(authentication,serialControl,false);
-}
-
-WiFiMan::WiFiMan(bool authentication,bool serialControl,bool debug)
-{
-    DEBUG=debug;
     AUTHENTICATION=authentication;
     SERIALCONTROL=serialControl;
     WiFi.disconnect();
@@ -31,40 +25,35 @@ void WiFiMan::setAuthentication(bool enable)
 
 bool WiFiMan::deleteConfig()
 {
-    debugHelper.printFunctionCall("deleteConfig");
+    DEBUG_MSG("#>> deleteConfig\n");
     if(SPIFFS.begin())
     {
         if(!SPIFFS.exists("/config.json"))
         {
-            debugHelper.println("config.json is not exists");
-            debugHelper.printLastMsg("deleteConfig-end");
+            DEBUG_MSG("#__ config.json is not exists\n");
+            DEBUG_MSG("#<< deleteConfig-end\n");
             return true;
         }
 
-        if(SPIFFS.remove("/config.json"))
+        if(SPIFFS.remove("/config.json\n"))
         {
-            debugHelper.println("Deleted config.json");
-            debugHelper.printLastMsg("deleteConfig-end");
+            DEBUG_MSG("#__ Deleted config.json\n");
+            DEBUG_MSG("#<< deleteConfig-end\n");
             return true;
         }
         else
         {
-            debugHelper.println("Cannot delete config.json");
-            debugHelper.printLastMsg("deleteConfig-end");
+            DEBUG_MSG("#__ Cannot delete config.json\n");
+            DEBUG_MSG("#<< deleteConfig-end\n");
             return false;
         }
     }
     else
     {
-        debugHelper.println("Failed to mount FS");
-        debugHelper.printLastMsg("deleteConfig-end");
+        DEBUG_MSG("#__ Failed to mount FS\n");
+        DEBUG_MSG("#<< deleteConfig-end\n");
         return false;
     }
-}
-
-void WiFiMan::setDebug(bool enable)
-{
-    DEBUG=enable;
 }
 
 
@@ -83,12 +72,12 @@ void WiFiMan::setSerialControl(bool enable)
 
 bool WiFiMan::readConfig()
 {
-    debugHelper.printFunctionCall("readConfig");
+    DEBUG_MSG("#>> readConfig\n");
     if(SPIFFS.begin())
     {
         if (SPIFFS.exists("/config.json")) 
         {
-            debugHelper.println("Reading config.json");
+            DEBUG_MSG("#__ Reading config.json\n");
             File configFile = SPIFFS.open("/config.json", "r");
             if (configFile) 
             {
@@ -101,7 +90,11 @@ bool WiFiMan::readConfig()
                 JsonObject& json = jsonBuffer.parseObject(buf.get());
                 if(json.success())
                 {
-                    debugHelper.printJson(json);
+                    #ifdef DEBUG_ESP_PORT
+                        DEBUG_MSG("#__ Json : ");
+                        json.printTo(DEBUG_ESP_PORT);
+                        DEBUG_MSG("\n");
+                    #endif
                     //parse 
                     _wifiSsid = json["wifiSsid"].as<String>();
                     _wifiPasswd = json["wifiPasswd"].as<String>();
@@ -116,57 +109,57 @@ bool WiFiMan::readConfig()
 
                     configFile.close();
                     SPIFFS.end();
-                    debugHelper.printLastMsg("readConfig-end");
+                    DEBUG_MSG("#<< readConfig-end\n");
                     return true;
                 }
                 else
                 {
-                    debugHelper.println("Cannot parse json. Wrong format ?");
-                    debugHelper.println("Close config.js");
+                    DEBUG_MSG("#__ Cannot parse json. Wrong format ?\n");
+                    DEBUG_MSG("#__ Close config.js\n");
                     configFile.close();
-                    debugHelper.println("Unmount FS");
+                    DEBUG_MSG("#__ Unmount FS\n");
                     SPIFFS.end();
 
-                    debugHelper.println("Trying to delete config.js");
+                    DEBUG_MSG("#__ Trying to delete config.js\n");
                     deleteConfig();
-                    debugHelper.println("write template for config.js");
+                    DEBUG_MSG("#__ write template for config.js\n");
                     writeConfig("","","","","","","","","","");
-                    debugHelper.printLastMsg("readConfig-end");
+                    DEBUG_MSG("#<< readConfig-end\n");
                     return false;
                 }
             }
             else
             {
-                debugHelper.println("Cannot open config.json");
-                debugHelper.println("Unmount FS");
+                DEBUG_MSG("#__ Cannot open config.json\n");
+                DEBUG_MSG("#__ Unmount FS\n");
                 SPIFFS.end();
-                debugHelper.printLastMsg("readConfig-end");
+                DEBUG_MSG("#<< readConfig-end\n");
                 return false;
             }
         }
         else
         {
-            debugHelper.println("config.json not exists");
-            debugHelper.println("Unmount FS");
+            DEBUG_MSG("#__ config.json not exists\n");
+            DEBUG_MSG("#__ Unmount FS\n");
             SPIFFS.end();
-            debugHelper.println("write template for config.js");
+            DEBUG_MSG("#__ write template for config.js\n");
             writeConfig("","","","","","","","","","");
-            debugHelper.printLastMsg("readConfig-end");
+            DEBUG_MSG("#<< readConfig-end\n");
             return false;
         }
     }
     else
     {
-        debugHelper.println("Failed to mount FS");
-        debugHelper.printLastMsg("readConfig-end");
+        DEBUG_MSG("#__ Failed to mount FS\n");
+        DEBUG_MSG("#<< readConfig-end\n");
         return false;
     }
 }
 
 bool WiFiMan::writeConfig(String wifiSsid,String wifiPasswd,String mqttAddr,String mqttPort,String mqttUsername,String mqttPasswd,String mqttSub,String mqttPub,String mqttId,String masterPasswd)
 {
-    debugHelper.printFunctionCall("writeConfig");
-    debugHelper.println("Updating config data");
+    DEBUG_MSG("#>> writeConfig\n");
+    DEBUG_MSG("#__ Updating config data\n");
     _wifiSsid = wifiSsid;
     _wifiPasswd = wifiPasswd;
     _mqttAddr = mqttAddr;
@@ -178,7 +171,7 @@ bool WiFiMan::writeConfig(String wifiSsid,String wifiPasswd,String mqttAddr,Stri
     _mqttId = mqttId;
     _masterPasswd = masterPasswd;
 
-    debugHelper.println("Writing config.json");
+    DEBUG_MSG("#__ Writing config.json\n");
     DynamicJsonBuffer jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
     json["wifiSsid"] = _wifiSsid;
@@ -198,74 +191,77 @@ bool WiFiMan::writeConfig(String wifiSsid,String wifiPasswd,String mqttAddr,Stri
         File configFile = SPIFFS.open("/config.json", "w");
         if (!configFile) 
         {
-            debugHelper.println("Failed to open config file for writing");
-            debugHelper.println("Unmount FS");
+            DEBUG_MSG("#__ Failed to open config file for writing\n");
+            DEBUG_MSG("#__ Unmount FS\n");
             SPIFFS.end();
-            debugHelper.printLastMsg("writeConfig-end");
+            DEBUG_MSG("#<< writeConfig-end\n");
             return false;
         }
 
         json.printTo(configFile);
-        debugHelper.println("Save successed!");
+        DEBUG_MSG("#__ Save successed!\n");
         configFile.close();
-        debugHelper.println("Unmount FS");
+        DEBUG_MSG("#__ Unmount FS\n");
         SPIFFS.end();
-        debugHelper.printLastMsg("writeConfig-end");
+        DEBUG_MSG("#<< writeConfig-end\n");
         return true;
     }
     else
     {
-        debugHelper.println("Failed to mount FS");
-        debugHelper.printLastMsg("writeConfig-end");
+        DEBUG_MSG("#__ Failed to mount FS\n");
+        DEBUG_MSG("#<< writeConfig-end\n");
         return false;
     }
 }
 
 void WiFiMan::start()
 {
-    debugHelper = DebugHelper(DEBUG);
-    debugHelper.printFunctionCall("start");
-    serialController = SerialController(SERIALCONTROL);
+    #ifdef DEBUG_ESP_PORT
+        DEBUG_ESP_PORT.begin(115200);
+        DEBUG_ESP_PORT.setDebugOutput(false);
+    #endif
+    DEBUG_MSG("#>> start\n");
+    serialController.reset(new SerialController(SERIALCONTROL));
     //get boot mode
     if(!FORCE_AP)
         FORCE_AP = getBootMode();
     //read config file
     if(readConfig() && !FORCE_AP)
     {
-        debugHelper.println("Trying to connect to AP");
+        DEBUG_MSG("#__ Trying to connect to AP\n");
         //success , try to connect to AP
         if(clientMode())
         {
             //connect success.
             //do nothing, leave the work for main program
-            debugHelper.println("Connected to AP");
-            debugHelper.printLastMsg("start-end");
+            DEBUG_MSG("#__ Connected to AP\n");
+            DEBUG_MSG("#<< start-end\n");
             return;
         }
         else
         {
             //connect failed , fire up softAP
-            debugHelper.println("Cannot connected to AP");
+            DEBUG_MSG("#__ Cannot connected to AP\n");
             WiFi.disconnect();
             apMode();
-            debugHelper.printLastMsg("start-end");
+            DEBUG_MSG("#<< start-end\n");
             return;
         }
     }
     else
     {
         //failed to read config file or force AP mode is enabled then fire up softAP
-        debugHelper.println("Cannot read config.json or FORCE_AP is enabled");
+        DEBUG_MSG("#__ Cannot read config.json or FORCE_AP is enabled\n");
         FORCE_AP = false;
         apMode();
-        debugHelper.printLastMsg("start-end");
+        DEBUG_MSG("#<< start-end\n");
         return;
     }
 }
 
 bool WiFiMan::clientMode()
 {
-    debugHelper.printFunctionCall("clientMode");
+    DEBUG_MSG("#>> clientMode\n");
     WiFi.mode(WIFI_STA);
     
     _mode=MODE::CLIENT;
@@ -273,22 +269,22 @@ bool WiFiMan::clientMode()
     //auto connect
     if(!validConfig())
     {
-        debugHelper.println("Invalid config. Exit client mode.");
-        debugHelper.printLastMsg("clientMode-end");
+        DEBUG_MSG("#__ Invalid config. Exit client mode.\n");
+        DEBUG_MSG("#<< clientMode-end\n");
         return false;
     }
     {
-        debugHelper.println("Connectiong to AP using saved config...");
+        DEBUG_MSG("#__ Connectiong to AP using saved config...\n");
         if(connect(_wifiSsid,_wifiPasswd))
         {
-            debugHelper.println("Connected to AP");
-            debugHelper.printLastMsg("clientMode-end");
+            DEBUG_MSG("#__ Connected to A\nP");
+            DEBUG_MSG("#<< clientMode-end\n");
             return true;
         }
         else
         {
-            debugHelper.println("Cannot connected to AP");
-            debugHelper.printLastMsg("clientMode-end");
+            DEBUG_MSG("#__ Cannot connected to AP\n");
+            DEBUG_MSG("#<< clientMode-end\n");
             return false;
         }
     }
@@ -298,13 +294,13 @@ bool WiFiMan::clientMode()
 bool WiFiMan::apMode()
 {
     //Serial.println(_apIp.toString());
-    debugHelper.printFunctionCall("apMode");
+    DEBUG_MSG("#>> apMode\n");
     _mode = MODE::AP;
 
     //setup web server
     setupWebServer();
 
-    debugHelper.println("Set wifi mode : WIFI_AP_STA");
+    DEBUG_MSG("#__ Set wifi mode : WIFI_AP_STA\n");
     WiFi.mode(WIFI_AP_STA);
     dnsServer.reset(new DNSServer());
 
@@ -312,32 +308,33 @@ bool WiFiMan::apMode()
     WiFi.softAPConfig(_apIp, _apGateway, _apSubnet);
     String apSSID = _apName + String( ESP.getChipId());
 
+    DEBUG_MSG("#__ SoftAP SIID : %s\n",apSSID.c_str());
     if(_apPasswd == "")
         WiFi.softAP(apSSID.c_str());
     else
         WiFi.softAP(apSSID.c_str(),_apPasswd.c_str());
 
 
-    debugHelper.println("SoftAP SIID : "+apSSID);
-    debugHelper.println("Server IP : "+_apIp.toString());
+    DEBUG_MSG("#__ SoftAP SIID : %s Passwd : %s\n",apSSID.c_str(),_apPasswd.c_str());
+    DEBUG_MSG("#__ Server IP : %s\n",_apIp.toString().c_str());
 
 
     delay(500);
 
-    debugHelper.println("Start DNS server");
+    DEBUG_MSG("#__ Start DNS server\n");
     dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
     //bool dnsResult = dnsServer->start(_DNS_PORT, "*", _apIp);
     if(dnsServer->start(_DNS_PORT, "*", _apIp))
-        debugHelper.println("DNS success");
+        DEBUG_MSG("#__ DNS success\n");
     else
-        debugHelper.println("DNS failed");
+        DEBUG_MSG("#__ DNS failed\n");
     
     //startweb server
-    debugHelper.println("Start web server");
+    DEBUG_MSG("#__ Start web server\n");
     webServer->begin();
 
     int startConfigTime = millis();
-    debugHelper.println("Started config potal");
+    DEBUG_MSG("#__ Started config potal\n");
     while(millis()-startConfigTime < _configTimeout*60000)
     {
         if(_action)
@@ -369,13 +366,15 @@ bool WiFiMan::apMode()
 
         // if connected , break portal loop
         if(WiFi.status() == WL_CONNECTED)
+        {
+            DEBUG_MSG("#__ Connected. Break the loop\n");
             break;
-
+        }
 
         //handle web request
         dnsServer->processNextRequest();
         webServer->handleClient();
-        serialController.handleSerial();
+        serialController->handleSerial();
     }
 
     WiFi.softAPdisconnect(true);
@@ -383,15 +382,15 @@ bool WiFiMan::apMode()
     stopDnsServer();
     if(!isConnected())
     {
-        debugHelper.println("Config potal timeout");
+        DEBUG_MSG("#__ Config potal timeout\n");
         _mode = MODE::TIMEOUT;
-        debugHelper.printLastMsg("apMode-end");
+        DEBUG_MSG("#<< apMode-end\n");
         return false;
     }
     else
     {
-        debugHelper.println("Connected to AP");
-        debugHelper.printLastMsg("apMode-end");
+        DEBUG_MSG("#__ Connected to AP\n");
+        DEBUG_MSG("#<< apMode-end\n");
         return true;
     }
 }
@@ -400,10 +399,10 @@ void WiFiMan::handleNotFound()
 {
     //Authentication
     if(AUTHENTICATION)
-        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword()))
+        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))
             return webServer->requestAuthentication();
 
-    debugHelper.printSingleFunctionCall("handleNotFound");
+    DEBUG_MSG("#><  handleNotFound\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
     page =page + FPSTR(HTTP_INFO);
     page=page + FPSTR(HTTP_FOOTER);
@@ -422,10 +421,10 @@ void WiFiMan::handleRoot()
 {
     //Authentication
     if(AUTHENTICATION)
-        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword()))
+        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))
             return webServer->requestAuthentication();
 
-    debugHelper.printSingleFunctionCall("handleRoot");
+    DEBUG_MSG("#><  handleRoot\n");
     String page = FPSTR(HTTP_HEADER);
     page=page + FPSTR(HTTP_INDEX);
     page=page + FPSTR(HTTP_FOOTER);
@@ -448,10 +447,10 @@ void WiFiMan::handleConfig()
 {
     //Authentication
     if(AUTHENTICATION)
-        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword()))
+        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))
             return webServer->requestAuthentication();
 
-    debugHelper.printSingleFunctionCall("handleConfig");
+    DEBUG_MSG("#><  handleConfig\n");
     String page = FPSTR(HTTP_HEADER);
     if(AUTHENTICATION)
         page=page + FPSTR(HTTP_CONFIG_AUTH);
@@ -475,10 +474,10 @@ void WiFiMan::handleClearSetting()
 {
     //Authentication
     if(AUTHENTICATION)
-        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword()))
+        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))
         return webServer->requestAuthentication();
 
-    debugHelper.printSingleFunctionCall("handleClearSetting");
+    DEBUG_MSG("#><  handleClearSetting\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
     page =page + FPSTR(HTTP_INFO);
     page=page + FPSTR(HTTP_FOOTER);
@@ -504,10 +503,10 @@ void WiFiMan::handleReset()
 {
     //Authentication
     if(AUTHENTICATION)
-        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword()))
+        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))
             return webServer->requestAuthentication();
 
-    debugHelper.printSingleFunctionCall("handleReset");
+    DEBUG_MSG("#><  handleReset\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
     page =page + FPSTR(HTTP_INFO);
     page=page + FPSTR(HTTP_FOOTER);
@@ -532,10 +531,10 @@ void WiFiMan::handleSave()
 {
     //Authentication
     if(AUTHENTICATION)
-        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword()))
+        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))
             return webServer->requestAuthentication();
 
-    debugHelper.printFunctionCall("handleSave");
+    DEBUG_MSG("#>> handleSave\n");
 
     String wifiSsid = webServer->arg("wifiSsid").c_str();
     String wifiPasswd = webServer->arg("wifiPasswd").c_str();
@@ -560,22 +559,22 @@ void WiFiMan::handleSave()
         confirmPasswd = "";
     }
 
-    debugHelper.println("wifiSsid : " + wifiSsid);
-    debugHelper.println("wifiPasswd : " + wifiPasswd);
-    debugHelper.println("mqttAddr : " + mqttAddr);
-    debugHelper.println("mqttPort : " + mqttPort);
-    debugHelper.println("mqttUsername : " + mqttUsername);
-    debugHelper.println("mqttPasswd : " + mqttPasswd);
-    debugHelper.println("mqttSub : " + mqttSub);
-    debugHelper.println("mqttPub : " + mqttPub);
-    debugHelper.println("mqttId : " + mqttId);
-    debugHelper.println("masterPasswd : " + masterPasswd);
-    debugHelper.println("confirmPasswd : " + confirmPasswd);
+    DEBUG_MSG("#__ wifiSsid : %s\n" , wifiSsid.c_str());
+    DEBUG_MSG("#__ wifiPasswd : %s\n" , wifiPasswd.c_str());
+    DEBUG_MSG("#__ mqttAddr : %s\n" , mqttAddr.c_str());
+    DEBUG_MSG("#__ mqttPort : %s\n" , mqttPort.c_str());
+    DEBUG_MSG("#__ mqttUsername : %s\n" , mqttUsername.c_str());
+    DEBUG_MSG("#__ mqttPasswd : %s\n" , mqttPasswd.c_str());
+    DEBUG_MSG("#__ mqttSub : %s\n" , mqttSub.c_str());
+    DEBUG_MSG("#__ mqttPub : %s\n" , mqttPub.c_str());
+    DEBUG_MSG("#__ mqttId : %s\n" , mqttId.c_str());
+    DEBUG_MSG("#__ masterPasswd : %s\n" , masterPasswd.c_str());
+    DEBUG_MSG("#__ confirmPasswd : %s\n" , confirmPasswd.c_str());
 
     if(mqttId == "")
     {
         mqttId = _defaultMqttId + "-" + String(ESP.getChipId());
-        debugHelper.println("Use default MQTT id : " + mqttId);
+        DEBUG_MSG("#__ Use default MQTT id : %s\n" , mqttId.c_str());
     }
 
 
@@ -604,21 +603,21 @@ void WiFiMan::handleSave()
         page.replace("{deviceInfo}",_deviceInfo);
         page.replace("{footer}",_footer);
         page.replace("{url}","/");
-        page.replace("{delay}","15");
+        page.replace("{delay}","30");
 
         page = applyTheme(page);
 
         webServer->send ( 200, "text/html", page );
         _action = ACTION_TYPE::CONFIG_SAVED;
 
-        debugHelper.println("config saved");
-        debugHelper.printLastMsg("handleSave-end");
+        DEBUG_MSG("#__ config saved\n");
+        DEBUG_MSG("#<< handleSave-end\n");
         return;
     }
     else
     {
         //something wrong , display error msg
-        debugHelper.println("Invalid input");
+        DEBUG_MSG("#__ Invalid input\n");
 
         String page = FPSTR(HTTP_HEADER);
         page =page + FPSTR(HTTP_EDIT);
@@ -635,7 +634,7 @@ void WiFiMan::handleSave()
         page = applyTheme(page);
 
         webServer->send ( 200, "text/html", page );
-        debugHelper.printLastMsg("handleSave-end");
+        DEBUG_MSG("#<< handleSave-end\n");
         return;
     }
 }
@@ -646,7 +645,7 @@ void WiFiMan::handlePortal()
     if(AUTHENTICATION)
     {
         //send portal page , display device ip address
-        debugHelper.printSingleFunctionCall("handlePortal");
+        DEBUG_MSG("#><  handlePortal\n");
         String page = FPSTR(HTTP_HEADER);
         page =page + FPSTR(HTTP_PORTAL);
         page=page + FPSTR(HTTP_FOOTER);
@@ -671,10 +670,10 @@ void WiFiMan::handleHelp()
 {
     //Authentication
     if(AUTHENTICATION)
-        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword()))
+        if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))
             return webServer->requestAuthentication();
 
-    debugHelper.printSingleFunctionCall("handleHelp");
+    DEBUG_MSG("#><  handleHelp\n");
     String page = FPSTR(HTTP_HEADER);
     page =page + FPSTR(HTTP_HELP);
     page=page + FPSTR(HTTP_FOOTER);
@@ -699,7 +698,7 @@ void WiFiMan::handleHelp()
 
 void WiFiMan::setupWebServer()
 {
-    debugHelper.printFunctionCall("setupWebServer");
+    DEBUG_MSG("#>> setupWebServer\n");
     //setup web server
     webServer.reset(new ESP8266WebServer(80));
 
@@ -709,12 +708,12 @@ void WiFiMan::setupWebServer()
     if(AUTHENTICATION)
     {
         otaUpdater->setup(webServer.get(),_httpUsername.c_str(),getApPassword());
-        debugHelper.println("start otaUpdater : "+_httpUsername+"@"+getApPassword());
+        DEBUG_MSG("#__ start otaUpdater : %s@%s\n",_httpUsername.c_str(),getApPassword().c_str());
     }
     else
     {
         otaUpdater->setup(webServer.get());
-        debugHelper.println("start otaUpdater");
+        DEBUG_MSG("#__ start otaUpdater\n");
     }
     
     //setup web server handles
@@ -728,7 +727,7 @@ void WiFiMan::setupWebServer()
     webServer->on("/generate_204", std::bind(&WiFiMan::handlePortal, this));
     webServer->on("/help", std::bind(&WiFiMan::handleHelp, this));
     //webServer->on("/update...); will be automatically handled by otaUpdater
-    debugHelper.printLastMsg("setupWebServer-end");
+    DEBUG_MSG("#<< setupWebServer-end\n");
 }
 
 void WiFiMan::setWebUi(String title,String banner,String build,String branch,String deviceInfo,String footer)
@@ -752,35 +751,35 @@ void WiFiMan::setWebUi(String title,String banner,String build,String branch,Str
 
 void WiFiMan::stopWebServer()
 {
-    debugHelper.printSingleFunctionCall("stopWebServer");
+    DEBUG_MSG("#><  stopWebServer\n");
     webServer->stop();
     webServer.reset();
 }
 
 void WiFiMan::stopDnsServer()
 {
-    debugHelper.printSingleFunctionCall("stopDnsServer");
+    DEBUG_MSG("#><  stopDnsServer\n");
     dnsServer->stop();
     dnsServer.reset();
 }
 
-const char* WiFiMan::getApPassword()
+String WiFiMan::getApPassword()
 {
-    debugHelper.printFunctionCall("getApPassword");
+    DEBUG_MSG("#>> getApPassword\n");
     if(_masterPasswd != "")
     {
-        debugHelper.println("Return password : "+_masterPasswd);
-        debugHelper.printLastMsg("getApPassword-end");
-        return _masterPasswd.c_str();
+        DEBUG_MSG("#__ Return password : %s\n",_masterPasswd.c_str());
+        DEBUG_MSG("#<< getApPassword-end\n");
+        return _masterPasswd;
     }
-    debugHelper.println("Return password : "+_defaultMasterPasswd);
-    debugHelper.printLastMsg("getApPassword-end");
-    return _defaultMasterPasswd.c_str();
+    DEBUG_MSG("#__ Return default password : %s\n",_defaultMasterPasswd.c_str());
+    DEBUG_MSG("#<< getApPassword-end\n");
+    return _defaultMasterPasswd;
 }
 
 String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,String mqttPort,String mqttUsername,String mqttPasswd,String mqttSub,String mqttPub,String mqttId,String masterPasswd,String confirmPasswd)
 {
-    debugHelper.printFunctionCall("checkInput");
+    DEBUG_MSG("#>> checkInput\n");
     String errorMsg = "";
     if(wifiSsid == "")
         errorMsg += "Invalid SSID<br/>"; 
@@ -803,8 +802,8 @@ String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,Str
             errorMsg += "Confirm password not matched<br/>"; 
     }
     if(errorMsg!="")
-        debugHelper.println("Error : "+errorMsg);
-    debugHelper.printLastMsg("checkInput-end");
+        DEBUG_MSG("#__ Error : %s\n" , errorMsg.c_str());
+    DEBUG_MSG("#<< checkInput-end\n");
     return errorMsg;
 }
 
@@ -813,7 +812,7 @@ bool WiFiMan::connect(String wifiSsid,String wifiPasswd)
     int oldMode = _mode;
     _mode = MODE::CONNECTING;
 
-    debugHelper.printFunctionCall("connect");
+    DEBUG_MSG("#>> connect\n");
     WiFi.disconnect(); 
     //check for wifi connection
     if(wifiPasswd == "")
@@ -821,34 +820,34 @@ bool WiFiMan::connect(String wifiSsid,String wifiPasswd)
     else
         WiFi.begin(wifiSsid.c_str(),wifiPasswd.c_str());
     
-    debugHelper.println("Connecting to AP : " + wifiSsid + "\tPassword :" + wifiPasswd );
+    DEBUG_MSG("#__ Connecting to AP : SSID : %s \tPassword : %s\n" , wifiSsid.c_str() ,  wifiPasswd.c_str() );
     for (int tryCount = 0;(WiFi.status() != WL_CONNECTED) && (tryCount < _maxConnectAttempt);tryCount++) 
     {
-        debugHelper.println(".");
+        DEBUG_MSG("#__ .\n");
         delay(500);
     }
 
     if(WiFi.status() == WL_CONNECTED)
     {
-        debugHelper.println("Connected to AP");
-        debugHelper.println("IP address : " + WiFi.localIP().toString());
+        DEBUG_MSG("#__ Connected to AP\n");
+        DEBUG_MSG("#__ IP address : %s\n" , WiFi.localIP().toString().c_str());
         _mode = MODE::CLIENT;
-        debugHelper.printLastMsg("connect-end");
+        DEBUG_MSG("#<< connect-end\n");
         return true;
     }
     else
     {
-        debugHelper.println("Cannot connect to AP. Exit client mode.");
+        DEBUG_MSG("#__ Cannot connect to AP. Exit client mode.\n");
         //return to the last mode
         _mode == oldMode;
-        debugHelper.printLastMsg("connect-end");
+        DEBUG_MSG("#<< connect-end\n");
         return false;
     }
 }
 
 bool WiFiMan::validConfig()
 {
-    debugHelper.printFunctionCall("validConfig");
+    DEBUG_MSG("#>> validConfig\n");
     bool returnCode = true;
 
     if(_wifiSsid == "")
@@ -864,14 +863,14 @@ bool WiFiMan::validConfig()
 
     if(returnCode)
     {
-        debugHelper.println("Config OK");
-        debugHelper.printLastMsg("validConfig-end");
+        DEBUG_MSG("#__ Config OK\n");
+        DEBUG_MSG("#<< validConfig-end\n");
         return returnCode;
     }
     else
     {   
-        debugHelper.println("Invalid config");
-        debugHelper.printLastMsg("validConfig-end");
+        DEBUG_MSG("#__ Invalid config\n");
+        DEBUG_MSG("#<< validConfig-end\n");
         return returnCode;
     }
     

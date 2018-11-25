@@ -10,10 +10,16 @@
 #include <ESP8266OTA.h>
 #include "WebUI.h"
 #include "Config.h"
-#include "DebugHelper.h"
 #include "SerialController.h"
 #include "Boot.h"
 #include "Theme.h"
+
+
+#ifdef DEBUG_ESP_PORT
+#define DEBUG_MSG(...) DEBUG_ESP_PORT.printf( __VA_ARGS__ )
+#else
+#define DEBUG_MSG(...)
+#endif
 
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
@@ -21,7 +27,6 @@ enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
 class WiFiMan
 {
   private:
-    bool DEBUG = false;;
     bool AUTHENTICATION = false;;
     bool SERIALCONTROL = false;;
     bool FORCE_AP = false;
@@ -31,11 +36,6 @@ class WiFiMan
 
     //action flag
     int _action = 0;
-
-    //for simple debug print
-    DebugHelper debugHelper;
-    //Serial controller
-    SerialController serialController;
     
     /* server config */
     //number of connect attempt to AP
@@ -89,6 +89,7 @@ class WiFiMan
     std::unique_ptr<DNSServer> dnsServer;
     std::unique_ptr<ESP8266WebServer> webServer;
     std::unique_ptr<ESP8266OTA> otaUpdater;
+    std::unique_ptr<SerialController> serialController;
 
     //web handles
     void handleRoot();
@@ -109,7 +110,7 @@ class WiFiMan
     
 
     //return ap and web access password , if masterPassword is not set, return default password
-    const char* getApPassword();
+    String getApPassword();
     //read config.json
     bool readConfig();
     //write new setting to config.json, new config also be reload
@@ -129,7 +130,6 @@ class WiFiMan
     
     
   public:
-    WiFiMan(bool authentication,bool serialControl,bool debug);
     WiFiMan(bool authentication,bool serialControl);
     WiFiMan(bool authentication);
     WiFiMan();
@@ -146,9 +146,6 @@ class WiFiMan
     //get device mode
     int getStatus();
     
-
-    //enable/disable serial debug
-    void setDebug(bool enable);
     //enable/disable webserver authentication
     void setAuthentication(bool enable);
     //set serial control

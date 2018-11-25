@@ -4,14 +4,12 @@ Config conf;
 
 void setup() 
 {
-    //create default object with authentication,serial control and debug off.Authentication,serial control and debug can be set with WiFiMan(bool authentication,bool serialControl,bool debug); or enable later (read below)
+    //create default object with authentication,serial control.Authentication and serial control can be set with WiFiMan(bool authentication,bool serialControl); or enable later (read below)
     WiFiMan wman = WiFiMan();
   
     //clear all config (delete config.json)
     //wman.deleteConfig();
     
-    //enable serial debug
-    wman.setDebug(true);
     //set serial control. during config mode , device can be config via serial command
     wman.setSerialControl(true);
 

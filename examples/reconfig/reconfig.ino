@@ -6,7 +6,6 @@ void setup()
   //create default object
   WiFiMan wman = WiFiMan();
   //wman.deleteConfig();
-  wman.setDebug(true);
 
   //Force esp8266 to config mode , forceApMode(); must be called before wman.start()
   pinMode(13,INPUT_PULLUP);
