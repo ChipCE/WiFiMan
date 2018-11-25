@@ -370,6 +370,18 @@ bool WiFiMan::apMode()
             DEBUG_MSG("#__ Connected. Break the loop\n");
             break;
         }
+        else
+        {
+             //if password has been changed and device failed to connect to network, reset the device to apply new password.
+            if(passwdChanged && _action==ACTION_TYPE::NONE)
+            {
+                DEBUG_MSG("#__ Password has been chaged, restart...\n");
+                ESP.restart();
+            }
+        }
+
+
+
 
         //handle web request
         dnsServer->processNextRequest();
@@ -583,8 +595,11 @@ void WiFiMan::handleSave()
     if( errorMsg == "")
     {
         //input seem good, save setting
-        if(masterPasswd!="")
+        if(masterPasswd != "")
+        {
             writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,masterPasswd);//change master password
+            passwdChanged = true;
+        }
         else
             writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,_masterPasswd);//keep old master password
 
@@ -594,7 +609,12 @@ void WiFiMan::handleSave()
         String page = FPSTR(HTTP_HEADERRELOAD);
         page =page + FPSTR(HTTP_INFO);
         page=page + FPSTR(HTTP_FOOTER);
-        page.replace("{info}","<br/>Config saved!<br/>Connecting to network...<br/>You will be disconnect from portal if connect success.");
+
+        //due Authentication has been changed, to connect to portal after changed password , esp8266 need to be reboot
+        if(passwdChanged)
+            page.replace("{info}","<br/>Config saved!<br/>Connecting to network...<br/>You will be disconnect from portal if connect success.<br/>If failed, device will reset to apply new password. ");
+        else
+            page.replace("{info}","<br/>Config saved!<br/>Connecting to network...<br/>You will be disconnect from portal if connect success.");
 
         page.replace("{title}",_title);
         page.replace("{banner}",_banner);

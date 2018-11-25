@@ -36,6 +36,9 @@ class WiFiMan
 
     //action flag
     int _action = 0;
+
+    //password changed flag
+    bool passwdChanged = false;
     
     /* server config */
     //number of connect attempt to AP
