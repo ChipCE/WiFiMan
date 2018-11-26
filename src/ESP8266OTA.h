@@ -1,14 +1,23 @@
 #ifndef __ESP8266_OTA_H
 #define __ESP8266_OTA_H
 
+/*
 #ifdef DEBUG_ESP_PORT
   #define DEBUG_MSG(...) DEBUG_ESP_PORT.printf( __VA_ARGS__ )
 #else
   #define DEBUG_MSG(...)
 #endif
+*/
 
+#include <Arduino.h>
+#include <WiFiClient.h>
+#include <WiFiServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiUdp.h>
 #include "WebUI.h"
 #include "Theme.h"
+#include "Boot.h"
+#include "DebugHelper.h"
 
 class ESP8266WebServer;
 

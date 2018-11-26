@@ -1069,29 +1069,7 @@ bool WiFiMan::getConfig(Config *conf)
     return false;
 }
 
-bool WiFiMan::getBootMode()
-{
-    //printDebug("getBootMode",true);
-    if(SPIFFS.begin())
-    {
-        if (SPIFFS.exists("/boot.conf")) 
-        {
-            SPIFFS.remove("/boot.conf");
-            SPIFFS.end();
-            return true;
-        }
-        else
-        {
-            SPIFFS.end();
-            return false;
-        }
-    }
-    else
-    {
-        //printDebug("Failed to mount FS",false);
-        return false;
-    }
-}
+
 
 String WiFiMan::applyTheme(String pageStr)
 {

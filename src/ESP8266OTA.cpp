@@ -1,8 +1,3 @@
-#include <Arduino.h>
-#include <WiFiClient.h>
-#include <WiFiServer.h>
-#include <ESP8266WebServer.h>
-#include <WiFiUdp.h>
 #include "ESP8266OTA.h"
 
 
@@ -65,7 +60,7 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
     _server->on(path, HTTP_POST, [&](){
       if(!_authenticated)
         return _server->requestAuthentication();
-
+      /*
       String pageSuccess = FPSTR(HTTP_HEADERRELOAD);
       pageSuccess = pageSuccess + FPSTR(HTTP_UPDATER_SUCCESS);
       pageSuccess = pageSuccess + FPSTR(HTTP_FOOTER);
@@ -98,7 +93,52 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
 
       _server->send(200, "text/html", Update.hasError() ? pageFailed : pageSuccess);
       delay(3000);
-      ESP.restart();
+      //ESP.restart();
+      rebootToApMode();
+      */
+
+      if(Update.hasError())
+      {
+        String pageFailed = FPSTR(HTTP_HEADERRELOAD);
+        pageFailed = pageFailed + FPSTR(HTTP_UPDATER_FAILED);
+        pageFailed = pageFailed + FPSTR(HTTP_FOOTER);
+
+        pageFailed.replace("{title}",_title);
+        pageFailed.replace("{banner}",_banner);
+        pageFailed.replace("{build}",_build);
+        pageFailed.replace("{branch}",_branch);
+        pageFailed.replace("{deviceInfo}",_deviceInfo);
+        pageFailed.replace("{footer}",_footer);
+        pageFailed.replace("{url}","/");
+        pageFailed.replace("{delay}","30");
+
+        pageFailed = applyTheme(pageFailed);
+
+        _server->send(200, "text/html",pageFailed);
+        delay(3000);
+        rebootToApMode();
+      }
+      else
+      {
+        String pageSuccess = FPSTR(HTTP_HEADERRELOAD);
+        pageSuccess = pageSuccess + FPSTR(HTTP_UPDATER_SUCCESS);
+        pageSuccess = pageSuccess + FPSTR(HTTP_FOOTER);
+
+        pageSuccess.replace("{title}",_title);
+        pageSuccess.replace("{banner}",_banner);
+        pageSuccess.replace("{build}",_build);
+        pageSuccess.replace("{branch}",_branch);
+        pageSuccess.replace("{deviceInfo}",_deviceInfo);
+        pageSuccess.replace("{footer}",_footer);
+        pageSuccess.replace("{url}","/");
+        pageSuccess.replace("{delay}","30");
+
+        pageSuccess = applyTheme(pageSuccess);
+
+        _server->send(200, "text/html",pageSuccess);
+        delay(3000);
+        reboot();
+      }
     },[&](){
       // handler for the file upload, get's the sketch bytes, and writes
       // them through the Update object

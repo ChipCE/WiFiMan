@@ -13,13 +13,15 @@
 #include "SerialController.h"
 #include "Boot.h"
 #include "Theme.h"
+#include "DebugHelper.h"
 
-
+/*
 #ifdef DEBUG_ESP_PORT
 #define DEBUG_MSG(...) DEBUG_ESP_PORT.printf( __VA_ARGS__ )
 #else
 #define DEBUG_MSG(...)
 #endif
+*/
 
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
@@ -128,8 +130,7 @@ class WiFiMan
     String checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,String mqttPort,String mqttUsername,String mqttPasswd,String mqttSub,String mqttPub,String mqttId,String masterPasswd,String confirmPasswd); 
     //connect to ap , send multicast dns for webserver if server is alive
     bool connect(String wifiSsid,String wifiPasswd);
-    //get boot mode, if true : skip auto connect, false : normal mode
-    bool getBootMode();
+
     
     
   public:
