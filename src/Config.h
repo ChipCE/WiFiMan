@@ -3,18 +3,17 @@
 
 typedef struct Config
 {
-    char *wifiSsid;
-    char *wifiPasswd;
-    char *mqttAddr;
+    char wifiSsid[33];
+    char wifiPasswd[33];
+    char mqttAddr[129];
     int mqttPort;
-    char *mqttUsername;
-    char *mqttPasswd;
-    char *mqttSub;
-    char *mqttPub;
-    char *mqttId;
-    char *masterPasswd;
-
+    char mqttUsername[33];
+    char mqttPasswd[33];
+    char mqttSub[129];
+    char mqttPub[129];
+    char mqttId[33];
+    char masterPasswd[33];
     IPAddress localIP;
-    char *mdnsName;
+    char mdnsName[33];
 };
 #endif

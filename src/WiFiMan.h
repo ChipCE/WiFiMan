@@ -87,8 +87,8 @@ class WiFiMan
     String _deviceInfo = "ChipId : " + String(ESP.getChipId());
     String _footer = "ESP8266 WiFiMan";
     String _helpInfo = "Please visit homepage for more information!";
-    //apply themes
-    String applyTheme(String pageStr);
+    //apply themes #testing
+    void applyTheme(String &page);
 
     //controller objects
     std::unique_ptr<DNSServer> dnsServer;
@@ -128,7 +128,7 @@ class WiFiMan
     bool apMode();
     //check user input and return error msg if nedded
     String checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,String mqttPort,String mqttUsername,String mqttPasswd,String mqttSub,String mqttPub,String mqttId,String masterPasswd,String confirmPasswd); 
-    //connect to ap , send multicast dns for webserver if server is alive
+    //connect to ap 
     bool connect(String wifiSsid,String wifiPasswd);
 
     
@@ -204,7 +204,7 @@ class WiFiMan
     String getDnsName();
     //get device mac address
     String getMacAddr();
-    //get all the config . return true if the config is valid(success connected to ap)
+    //get all the config . return true if the config is valid(success connected to ap) #testing
     bool getConfig(Config *conf);
 
 };

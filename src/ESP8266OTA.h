@@ -37,7 +37,7 @@ class ESP8266OTA
     String _footer = "ESP8266 OTA Updater";
 
     //apply themes
-    String applyTheme(String pageStr);
+    void applyTheme(String &page);
 
   public:
     ESP8266OTA();

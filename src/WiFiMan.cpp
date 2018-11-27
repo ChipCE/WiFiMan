@@ -449,7 +449,7 @@ void WiFiMan::handleRoot()
     page.replace("{deviceInfo}",_deviceInfo);
     page.replace("{footer}",_footer);
 
-    page = applyTheme(page);
+    applyTheme(page);
 
     webServer->send ( 200, "text/html", page );
 }
@@ -478,7 +478,7 @@ void WiFiMan::handleConfig()
     page.replace("{deviceInfo}",_deviceInfo);
     page.replace("{footer}",_footer);
     
-    page = applyTheme(page);
+    applyTheme(page);
 
     webServer->send ( 200, "text/html", page );
 }
@@ -505,7 +505,7 @@ void WiFiMan::handleClearSetting()
     page.replace("{url}","/");
     page.replace("{delay}","15");
 
-    page = applyTheme(page);
+    applyTheme(page);
 
     webServer->send ( 200, "text/html", page );
     webServer->client().stop();
@@ -534,7 +534,7 @@ void WiFiMan::handleReset()
     page.replace("{url}","/");
     page.replace("{delay}","15");
 
-    page = applyTheme(page);
+    applyTheme(page);
 
     webServer->send ( 200, "text/html", page );
     _action = ACTION_TYPE::SYS_RESET;
@@ -626,7 +626,7 @@ void WiFiMan::handleSave()
         page.replace("{url}","/");
         page.replace("{delay}","30");
 
-        page = applyTheme(page);
+        applyTheme(page);
 
         webServer->send ( 200, "text/html", page );
         _action = ACTION_TYPE::CONFIG_SAVED;
@@ -652,7 +652,7 @@ void WiFiMan::handleSave()
         page.replace("{deviceInfo}",_deviceInfo);
         page.replace("{footer}",_footer);
 
-        page = applyTheme(page);
+        applyTheme(page);
 
         webServer->send ( 200, "text/html", page );
         DEBUG_MSG("#<< handleSave-end\n");
@@ -679,7 +679,7 @@ void WiFiMan::handlePortal()
         page.replace("{footer}",_footer);
         page.replace("{ip}",_apIp.toString());
 
-        page = applyTheme(page);
+        applyTheme(page);
 
         webServer->send ( 200, "text/html", page );
     }
@@ -709,7 +709,7 @@ void WiFiMan::handleHelp()
     page.replace("{url}","/");
     page.replace("{delay}","15");
 
-    page = applyTheme(page);
+    applyTheme(page);
 
     webServer->send ( 200, "text/html", page );
 }
@@ -1029,37 +1029,37 @@ void WiFiMan::setHelpInfo(String helpInfo)
 
 bool WiFiMan::getConfig(Config *conf)
 {
-    conf->wifiSsid = (char*)malloc((_wifiSsid.length()+1) * sizeof(char));
+    //conf->wifiSsid = (char*)malloc((_wifiSsid.length()+1) * sizeof(char));
     strcpy(conf->wifiSsid,_wifiSsid.c_str());
 
-    conf->wifiPasswd = (char*)malloc((_wifiPasswd.length()+1) * sizeof(char));
+    //conf->wifiPasswd = (char*)malloc((_wifiPasswd.length()+1) * sizeof(char));
     strcpy(conf->wifiPasswd,_wifiPasswd.c_str());
     
-    conf->mqttAddr = (char*)malloc((_mqttAddr.length()+1) * sizeof(char));
+    //conf->mqttAddr = (char*)malloc((_mqttAddr.length()+1) * sizeof(char));
     strcpy(conf->mqttAddr,_mqttAddr.c_str());
     
     conf->mqttPort = _mqttPort.toInt();
     
-    conf->mqttUsername = (char*)malloc((_mqttUsername.length()+1) * sizeof(char));
+    //conf->mqttUsername = (char*)malloc((_mqttUsername.length()+1) * sizeof(char));
     strcpy(conf->mqttUsername,_mqttUsername.c_str());
     
-    conf->mqttPasswd = (char*)malloc((_mqttPasswd.length()+1) * sizeof(char));
+    //conf->mqttPasswd = (char*)malloc((_mqttPasswd.length()+1) * sizeof(char));
     strcpy(conf->mqttPasswd,_mqttPasswd.c_str());
     
-    conf->mqttSub = (char*)malloc((_mqttSub.length()+1) * sizeof(char));
+    //conf->mqttSub = (char*)malloc((_mqttSub.length()+1) * sizeof(char));
     strcpy(conf->mqttSub,_mqttSub.c_str());
     
-    conf->mqttPub = (char*)malloc((_mqttPub.length()+1) * sizeof(char));
+    //conf->mqttPub = (char*)malloc((_mqttPub.length()+1) * sizeof(char));
     strcpy(conf->mqttPub,_mqttPub.c_str());
     
-    conf->mqttId = (char*)malloc((_mqttId.length()+1) * sizeof(char));
+    //conf->mqttId = (char*)malloc((_mqttId.length()+1) * sizeof(char));
     strcpy(conf->mqttId,_mqttId.c_str());
     
-    conf->masterPasswd = (char*)malloc((_masterPasswd.length()+1) * sizeof(char));
+    //conf->masterPasswd = (char*)malloc((_masterPasswd.length()+1) * sizeof(char));
     strcpy(conf->masterPasswd,_masterPasswd.c_str());
 
     String mdnsName = _mqttId + ".local";
-    conf->mdnsName = (char*)malloc((mdnsName.length()+1) * sizeof(char));
+    //conf->mdnsName = (char*)malloc((mdnsName.length()+1) * sizeof(char));
     strcpy(conf->mdnsName,mdnsName.c_str());
 
     conf->localIP = getIp();
@@ -1071,9 +1071,8 @@ bool WiFiMan::getConfig(Config *conf)
 
 
 
-String WiFiMan::applyTheme(String pageStr)
+void WiFiMan::applyTheme(String &page)
 {
-    String page = pageStr;
     DEBUG_MSG("#>< Apply theme\n");
 
     page.replace("{body-text-color}",FPSTR(body_text_color));
@@ -1091,6 +1090,4 @@ String WiFiMan::applyTheme(String pageStr)
     page.replace("{footer-text-color}",FPSTR(footer_text_color));
     page.replace("{footer-background-color}",FPSTR(footer_background_color));
     page.replace("{footer-background-image}",FPSTR(footer_background_image));
-
-    return page;
 }

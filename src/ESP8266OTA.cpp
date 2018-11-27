@@ -51,7 +51,7 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
       pageIndex.replace("{deviceInfo}",_deviceInfo);
       pageIndex.replace("{footer}",_footer);
 
-      pageIndex = applyTheme(pageIndex);
+      applyTheme(pageIndex);
 
       _server->send(200, "text/html", pageIndex);
     });
@@ -112,7 +112,7 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
         pageFailed.replace("{url}","/");
         pageFailed.replace("{delay}","30");
 
-        pageFailed = applyTheme(pageFailed);
+        applyTheme(pageFailed);
 
         _server->send(200, "text/html",pageFailed);
         delay(3000);
@@ -133,7 +133,7 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
         pageSuccess.replace("{url}","/");
         pageSuccess.replace("{delay}","30");
 
-        pageSuccess = applyTheme(pageSuccess);
+        applyTheme(pageSuccess);
 
         _server->send(200, "text/html",pageSuccess);
         delay(3000);
@@ -242,10 +242,8 @@ void ESP8266OTA::updatePassword(String password)
   _password = password;
 }
 
-String ESP8266OTA::applyTheme(String pageStr)
+void ESP8266OTA::applyTheme(String &page)
 {
-    String page = pageStr;
-    
     page.replace("{body-text-color}",FPSTR(body_text_color));
     page.replace("{body-background-image}",FPSTR(body_background_image));
     page.replace("{body-background-color}",FPSTR(body_background_color));
@@ -261,6 +259,4 @@ String ESP8266OTA::applyTheme(String pageStr)
     page.replace("{footer-text-color}",FPSTR(footer_text_color));
     page.replace("{footer-background-image}",FPSTR(footer_background_image));
     page.replace("{footer-background-color}",FPSTR(footer_background_color));
-
-    return page;
 }
