@@ -9,6 +9,7 @@
 WiFiMan	KEYWORD1
 Config	KEYWORD1
 SerialController	KEYWORD1
+ESP8266OTA	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -48,3 +49,4 @@ getConfig	KEYWORD2
 rebootToApMode	KEYWORD2
 clear	KEYWORD2
 reboot	KEYWORD2
+setUpdaterUi	KEYWORD2
