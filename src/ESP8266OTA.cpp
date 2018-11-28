@@ -244,19 +244,5 @@ void ESP8266OTA::updatePassword(String password)
 
 void ESP8266OTA::applyTheme(String &page)
 {
-    page.replace("{body-text-color}",FPSTR(body_text_color));
-    page.replace("{body-background-image}",FPSTR(body_background_image));
-    page.replace("{body-background-color}",FPSTR(body_background_color));
-    
-    page.replace("{button-text-color}",FPSTR(button_text_color));
-    page.replace("{button-background-image}",FPSTR(button_background_image));
-    page.replace("{button-backround-color}",FPSTR(button_backround_color));
-
-    page.replace("{header-text-color}",FPSTR(header_text_color));
-    page.replace("{header-background-image}",FPSTR(header_background_image));
-    page.replace("{header-background-color}",FPSTR(header_background_color));
-
-    page.replace("{footer-text-color}",FPSTR(footer_text_color));
-    page.replace("{footer-background-image}",FPSTR(footer_background_image));
-    page.replace("{footer-background-color}",FPSTR(footer_background_color));
+  page.replace("{custom-css}",FPSTR(custom_css));
 }

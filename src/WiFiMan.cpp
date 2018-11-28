@@ -508,6 +508,7 @@ void WiFiMan::handleClearSetting()
     applyTheme(page);
 
     webServer->send ( 200, "text/html", page );
+    delay(2000);
     webServer->client().stop();
     _action = ACTION_TYPE::CLEAR_CONFIG;
 }
@@ -535,8 +536,9 @@ void WiFiMan::handleReset()
     page.replace("{delay}","15");
 
     applyTheme(page);
-
     webServer->send ( 200, "text/html", page );
+    delay(2000);
+    webServer->client().stop();
     _action = ACTION_TYPE::SYS_RESET;
 }
 
@@ -1074,20 +1076,5 @@ bool WiFiMan::getConfig(Config *conf)
 void WiFiMan::applyTheme(String &page)
 {
     DEBUG_MSG("#>< Apply theme\n");
-
-    page.replace("{body-text-color}",FPSTR(body_text_color));
-    page.replace("{body-background-color}",FPSTR(body_background_color));
-    page.replace("{body-background-image}",FPSTR(body_background_image));
-    
-    page.replace("{button-text-color}",FPSTR(button_text_color));
-    page.replace("{button-backround-color}",FPSTR(button_backround_color));
-    page.replace("{button-background-image}",FPSTR(button_background_image));
-
-    page.replace("{header-text-color}",FPSTR(header_text_color));
-    page.replace("{header-background-color}",FPSTR(header_background_color));
-    page.replace("{header-background-image}",FPSTR(header_background_image));
-    
-    page.replace("{footer-text-color}",FPSTR(footer_text_color));
-    page.replace("{footer-background-color}",FPSTR(footer_background_color));
-    page.replace("{footer-background-image}",FPSTR(footer_background_image));
+    page.replace("{custom-css}",FPSTR(custom_css));
 }
