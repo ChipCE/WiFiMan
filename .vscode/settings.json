@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "algorithm": "cpp",
-        "xstring": "cpp",
-        "*.tcc": "cpp"
-    }
-}
