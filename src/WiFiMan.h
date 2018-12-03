@@ -14,6 +14,7 @@
 #include "Boot.h"
 #include "Theme.h"
 #include "DebugHelper.h"
+#include "CusomConfig.h"
 
 /*
 #ifdef DEBUG_ESP_PORT
@@ -131,7 +132,10 @@ class WiFiMan
     //connect to ap 
     bool connect(String wifiSsid,String wifiPasswd);
 
-    
+    //testing ---------------------
+    String httpCustomArg = "Custom Configuration";
+    CustomConfig customConfig;
+    void saveCustomConfig();
     
   public:
     WiFiMan(bool authentication,bool serialControl);
@@ -207,5 +211,8 @@ class WiFiMan
     //get all the config . return true if the config is valid(success connected to ap) #testing
     bool getConfig(Config *conf);
 
+    //testting
+    void addCustomArg(String name,String length,String type,String placeholder);
+    void loadCustomConfig();
 };
 #endif

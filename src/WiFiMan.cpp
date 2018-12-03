@@ -1077,4 +1077,33 @@ void WiFiMan::applyTheme(String &page)
 {
     DEBUG_MSG("#>< Apply theme\n");
     page.replace("{custom-css}",FPSTR(custom_css));
+
+    //testing - add custom config
+    if( customConfig.count > 0)
+        page.replace("{custom-arg}",httpCustomArg);
+    else
+        page.replace("{custom-arg}","");
+}
+
+
+void WiFiMan::addCustomArg(String name,String length,String type,String placeholder)
+{
+    String arg = FPSTR(HTTP_CUSTOM_ARG);
+
+    //add to arg pool
+    arg.replace("{arg-name}",name);
+    arg.replace("{arg-length}",length);
+    arg.replace("{arg-type}",type);
+    arg.replace("{arg-place-holder}",placeholder);
+    httpCustomArg += arg;
+
+    //add to custom arg struct
+    customConfig.args[customConfig.count].key = name;
+    customConfig.count++;
+}
+
+void WiFiMan::saveCustomConfig()
+{
+    //save csutom config here 
+    // del the json if needed
 }
