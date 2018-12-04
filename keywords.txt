@@ -8,6 +8,7 @@
 
 WiFiMan	KEYWORD1
 Config	KEYWORD1
+CustomConfig	KEYWORD1
 SerialController	KEYWORD1
 ESP8266OTA	KEYWORD1
 
@@ -50,3 +51,4 @@ rebootToApMode	KEYWORD2
 clear	KEYWORD2
 reboot	KEYWORD2
 setUpdaterUi	KEYWORD2
+getCustomConfig	KEYWORD2

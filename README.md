@@ -2,13 +2,15 @@
 Wifiman is Wifi manager for ESP8266 with customizable web UI and ability to config mqtt and control via serial.   
 ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.   
 
-## Notice
-### Change in v1.1.0
-- Merge ESP8266OTA with WiFiMan 
+## Change logs
+### v1.2.0
+- Added "Custom config" function.
+### v1.1.0
+- Merge ESP8266OTA with WiFiMan   
 If you have the old ESP8266OTA library installed, please remove it to avoid conflig with new WiFiMan library.   
-- Rework with Web UI for more customizable and better memory usage.
-UI text color and backdround now can be customized.Change the color value of your choice in Theme.h file.   
-Some sample of Theme.h are available in themes folder.New themes will be added later.   
+- Rework with Web UI for more customizable and better memory usage.   
+Web UI now can be customized with Theme.h file.   
+Some sample of Theme.h are available in themes folder.
 
 ## How to install 
 - Method 1 : Install from Arduino IDE library manager 
@@ -56,6 +58,8 @@ Some sample of Theme.h are available in themes folder.New themes will be added l
     Set config portal username.
 - void setDefaultMasterPasswd(String passwd);   
     Set config portal default password.
+- void addCustomArg(String name,String length,String type,String placeholder);   
+    Add custom config parameter to config page.
   
 ### Get config parameters
 - String getWifiSsid();   
@@ -86,6 +90,8 @@ Some sample of Theme.h are available in themes folder.New themes will be added l
     Get device mac address
 - bool getConfig(Config *conf);   
     Get all config parameters. Return true if the config is valid(success connected to ap)
+- bool getCustomConfig(CustomConfig *customConf);   
+    Get custom config parameters. Return true if success, false if there is no custom config or cannot read customConfig file.
 
 ### Controls
 - void start();   

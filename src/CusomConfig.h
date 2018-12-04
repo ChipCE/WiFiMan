@@ -1,6 +1,8 @@
 #ifndef __CUSTOM_CONFIG_H
 #define __CUSTOM_CONFIG_H
 
+#define MAX_CUSTOM_CONFIG 12
+
 typedef struct CustomArg
 {
     String key;
@@ -10,7 +12,7 @@ typedef struct CustomArg
 typedef struct CustomConfig
 {
     int count = 0;
-    CustomArg args[10];
+    CustomArg args[MAX_CUSTOM_CONFIG];
 };
 
 #endif

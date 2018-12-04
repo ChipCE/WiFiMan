@@ -551,6 +551,7 @@ void WiFiMan::handleSave()
 
     DEBUG_MSG("#>> handleSave\n");
 
+    //get config data
     String wifiSsid = webServer->arg("wifiSsid").c_str();
     String wifiPasswd = webServer->arg("wifiPasswd").c_str();
     String mqttAddr = webServer->arg("mqttAddr").c_str();
@@ -562,6 +563,15 @@ void WiFiMan::handleSave()
     String mqttId = webServer->arg("mqttId").c_str();
     String masterPasswd;
     String confirmPasswd;
+
+    //get custom config data
+    if(customConfig.count)
+    {
+        for(int i=0;i<customConfig.count;i++)
+        {
+            customConfig.args[i].value = webServer->arg(customConfig.args[i].key).c_str();
+        }
+    }
 
     if(AUTHENTICATION)
     {
@@ -605,6 +615,9 @@ void WiFiMan::handleSave()
         }
         else
             writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,_masterPasswd);//keep old master password
+
+        //save custom config
+        saveCustomConfig();
 
         //update password for OTA updater
         otaUpdater->updatePassword(_masterPasswd);
@@ -1088,6 +1101,7 @@ void WiFiMan::applyTheme(String &page)
 
 void WiFiMan::addCustomArg(String name,String length,String type,String placeholder)
 {
+    DEBUG_MSG("#>< addCustomArg\n");
     String arg = FPSTR(HTTP_CUSTOM_ARG);
 
     //add to arg pool
@@ -1102,8 +1116,149 @@ void WiFiMan::addCustomArg(String name,String length,String type,String placehol
     customConfig.count++;
 }
 
-void WiFiMan::saveCustomConfig()
+bool WiFiMan::saveCustomConfig()
 {
-    //save csutom config here 
-    // del the json if needed
+    DEBUG_MSG("#>> saveCustomConfig\n");
+    if(customConfig.count)
+    {
+        //make json data
+        DynamicJsonBuffer jsonBuffer;
+        JsonObject& json = jsonBuffer.createObject();
+        String keyList = "";
+        for(int i=0;i<customConfig.count;i++)
+        {
+            DEBUG_MSG("#__ %s : %s \n",customConfig.args[i].key.c_str(),customConfig.args[i].value.c_str());
+            json[customConfig.args[i].key] = customConfig.args[i].value;
+            
+            //append key list
+            keyList += customConfig.args[i].key;
+            keyList += ",";
+        }
+
+        //write list of key and counter to json
+        json["key-count"] = customConfig.count;
+        json["key-list"] = keyList;
+
+        DEBUG_MSG("#__ Writing customConfig.json\n");
+        if(SPIFFS.begin())
+        {
+            File configFile = SPIFFS.open("/customConfig.json", "w");
+            if (!configFile) 
+            {
+                DEBUG_MSG("#__ Failed to open customConfig file for writing\n");
+                DEBUG_MSG("#__ Unmount FS\n");
+                SPIFFS.end();
+                DEBUG_MSG("#<< saveCustomConfig-end\n");
+                return false;
+            }
+
+            json.printTo(configFile);
+            DEBUG_MSG("#__ Save successed!\n");
+            configFile.close();
+            DEBUG_MSG("#__ Unmount FS\n");
+            SPIFFS.end();
+            DEBUG_MSG("#<< saveCustomConfig-end\n");
+            return true;
+        }
+        else
+        {
+            DEBUG_MSG("#__ Failed to mount FS\n");
+            DEBUG_MSG("#<< saveCustomConfig-end\n");
+            return false;
+        }
+
+    }
+    else
+    {
+        DEBUG_MSG("#__ There is no custom config to save.\n");
+        DEBUG_MSG("#__ Trying to delete old customConfig.json if exists.\n");
+
+        //delete old customConfig.json
+        if(SPIFFS.begin())
+        {
+            if (SPIFFS.exists("/customConfig.json")) 
+                SPIFFS.remove("/customConfig.json");
+            DEBUG_MSG("#__ Deleted customConfig.json.\n");
+            SPIFFS.end();
+        }
+        else
+        {
+            DEBUG_MSG("#__ Cannot mount FS.\n");
+            DEBUG_MSG("#<< saveCustomConfig-end\n");
+            return false;
+        }
+
+        DEBUG_MSG("#<< saveCustomConfig-end\n");
+        return true;
+    }
+}
+
+bool WiFiMan::getCustomConfig(CustomConfig *customConf)
+{
+    DEBUG_MSG("#>> getCustomConfigJson\n");
+    if(SPIFFS.begin())
+    {
+        File customConfigFile = SPIFFS.open("/customConfig.json", "r");
+        if (customConfigFile) 
+        {
+            DEBUG_MSG("#__ Reading customConfig.json.\n");
+            size_t size = customConfigFile.size();
+            std::unique_ptr<char[]> buf(new char[size]);
+
+            customConfigFile.readBytes(buf.get(), size);
+            DynamicJsonBuffer jsonBuffer;
+
+            //parse
+            JsonObject& json = jsonBuffer.parseObject(buf.get());
+
+            if(json.success())
+            {
+                customConfigFile.close();
+                SPIFFS.end();
+                DEBUG_MSG("#__ Parse json : success.\n");
+
+                // parse json to customConfig object
+                //get counter
+                customConf->count = json["key-count"].as<signed int>();
+                //get key
+                String keyList = json["key-list"].as<String>();
+                for(int i=0;i<customConf->count;i++)
+                {
+                    int index = keyList.indexOf(',');
+                    customConf->args[i].key = keyList.substring(0,index);
+                    keyList.replace(customConf->args[i].key+",","");
+                }
+                //get value
+                for(int i=0;i<customConf->count;i++)
+                {
+                    customConf->args[i].value = json[customConf->args[i].key].as<String>();
+                }
+
+
+                DEBUG_MSG("#<< readCustomConfigJson-end\n");
+                return true;
+            }
+            else
+            {
+                customConfigFile.close();
+                SPIFFS.end();
+                DEBUG_MSG("#__ Cannot parse json.\n");
+                DEBUG_MSG("#<< readCustomConfigJson-end\n");
+                return false;
+            }
+        }
+        else
+        {
+            SPIFFS.end();
+            DEBUG_MSG("#__ Cannot open customConfig.json\n");
+            DEBUG_MSG("#<< readCustomConfigJson-end\n");
+            return false;
+        }
+    }
+    else
+    {
+        DEBUG_MSG("#__ Failed to mount FS\n");
+        DEBUG_MSG("#<< readCustomConfigJson-end\n");
+        return false;
+    }
 }

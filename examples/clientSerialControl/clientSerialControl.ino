@@ -5,6 +5,8 @@ SerialController sc;
 
 void setup() 
 {
+  Serial.begin(115200);
+  
   //create default object
   WiFiMan wman = WiFiMan();
   

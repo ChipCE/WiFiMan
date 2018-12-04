@@ -135,7 +135,8 @@ class WiFiMan
     //testing ---------------------
     String httpCustomArg = "Custom Configuration";
     CustomConfig customConfig;
-    void saveCustomConfig();
+    
+    bool saveCustomConfig();
     
   public:
     WiFiMan(bool authentication,bool serialControl);
@@ -210,9 +211,9 @@ class WiFiMan
     String getMacAddr();
     //get all the config . return true if the config is valid(success connected to ap) #testing
     bool getConfig(Config *conf);
-
-    //testting
+    ///add cutom config to config UI
     void addCustomArg(String name,String length,String type,String placeholder);
-    void loadCustomConfig();
+    //get custom config object
+    bool getCustomConfig(CustomConfig *customConf);
 };
 #endif
