@@ -58,8 +58,10 @@ Some sample of Theme.h are available in themes folder.
     Set config portal username.
 - void setDefaultMasterPasswd(String passwd);   
     Set config portal default password.
-- void addCustomArg(String name,String length,String type,String placeholder);   
+- void addCustomArg(String label,String name,String length,String type,String placeholder,String addition);   
     Add custom config parameter to config page.
+- void disableMqttConfig()   
+    Disable MQTT configuration in web UI.
   
 ### Get config parameters
 - String getWifiSsid();   
@@ -74,8 +76,8 @@ Some sample of Theme.h are available in themes folder.
     Get mqtt server password
 - String getMqttUsername();   
     Get mqtt server username
-- String getMqttId();   
-    Get mqtt id
+- String getMqttId(); and String getDeviceId();   
+    Get mqtt id or device id.Lis library use device id as mqtt id.
 - String getMqttSub();   
     Get mqtt sub topic
 - String getMqttPub();   

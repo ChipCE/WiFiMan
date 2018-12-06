@@ -33,6 +33,7 @@ class WiFiMan
     bool AUTHENTICATION = false;;
     bool SERIALCONTROL = false;;
     bool FORCE_AP = false;
+    bool MQTT = true;
 
     //mode
     int _mode = MODE::INIT;
@@ -133,7 +134,7 @@ class WiFiMan
     bool connect(String wifiSsid,String wifiPasswd);
 
     //testing ---------------------
-    String httpCustomArg = "Custom Configuration";
+    String httpCustomArg = "";
     CustomConfig customConfig;
     
     bool saveCustomConfig();
@@ -195,6 +196,7 @@ class WiFiMan
     String getMqttUsername();
     //get mqtt id
     String getMqttId();
+    String getDeviceId();
     //get mqtt sub topic
     String getMqttSub();
     //get mqtt pub  topic 
@@ -212,8 +214,10 @@ class WiFiMan
     //get all the config . return true if the config is valid(success connected to ap) #testing
     bool getConfig(Config *conf);
     ///add cutom config to config UI
-    void addCustomArg(String name,String length,String type,String placeholder);
+    void addCustomArg(String label,String name,String length,String type,String placeholder,String addition);
     //get custom config object
     bool getCustomConfig(CustomConfig *customConf);
+    //disable MQTT config in UI
+    void disableMqttConfig();
 };
 #endif

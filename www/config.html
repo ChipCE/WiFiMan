@@ -86,15 +86,18 @@
     <div id="body">
         <form method='get' action='/save'>
             Wifi configuration
-            <input name='wifiSsid' maxlength=8 placeholder='SSID'><br />
+            <input name='wifiSsid' maxlength=8 placeholder='SSID' required><br />
             <input name='wifiPasswd' maxlength=32 type='password' placeholder='password'><br />
-            MQTT configuration<input name='mqttAddr' maxlength=128 placeholder='MQTT server'><br />
-            <input name='mqttPort' maxlength='8' type='number' placeholder='MQTT port'><br />
+            Device configuration
+            <input name='mqttId' maxlength=32 placeholder='MQTT ID/Device ID'><br />
+            MQTT configuration
+            <input name='mqttAddr' maxlength=128 placeholder='MQTT server' required><br />
+            <input name='mqttPort' maxlength='8' type='number' placeholder='MQTT port' required><br />
             <input name='mqttUsername' maxlength=32 placeholder='MQTT Username'><br />
             <input name='mqttPasswd' maxlength=32 type='password' placeholder='MQTT password'><br />
             <input name='mqttSub' maxlength=128 placeholder='Subscribe topic'><br />
             <input name='mqttPub' maxlength=128 placeholder='Publish topic'><br />
-            <input name='mqttId' maxlength=32 placeholder='MQTT ID'><br />
+            
             Security configuration
             <input name='masterPasswd' maxlength=32 type='password' placeholder='New password'><br />
             <input name='confirmPasswd' maxlength=32 type='password' placeholder='Confirm password'><br />

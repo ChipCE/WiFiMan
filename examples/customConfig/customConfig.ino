@@ -9,9 +9,15 @@ void setup()
   WiFiMan wman = WiFiMan();
 
   //add custom config, this must be called before wman.start()
-  wman.addCustomArg("test-number","6","number","test number");
-  wman.addCustomArg("test-password","6","password","test password");
-  wman.addCustomArg("test-txt","6","text","test txt");
+  //with laber and addition required filed
+  wman.addCustomArg("number","test-number","6","number","test number","required");
+  //with label
+  wman.addCustomArg("password","test-password","6","password","test password","");
+  //or just the input text field
+  wman.addCustomArg("","test-txt","6","text","test txt","");
+
+  //disable mqtt config
+  wman.disableMqttConfig();
   
   wman.start();
 

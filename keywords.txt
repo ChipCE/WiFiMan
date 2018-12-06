@@ -52,3 +52,5 @@ clear	KEYWORD2
 reboot	KEYWORD2
 setUpdaterUi	KEYWORD2
 getCustomConfig	KEYWORD2
+disableMqttConfig	KEYWORD2
+getDeviceId	KEYWORD2
