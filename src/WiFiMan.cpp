@@ -25,28 +25,43 @@ void WiFiMan::setAuthentication(bool enable)
 
 bool WiFiMan::deleteConfig()
 {
+    bool delResult = true;
     DEBUG_MSG("#>> deleteConfig\n");
     if(SPIFFS.begin())
     {
-        if(!SPIFFS.exists("/config.json"))
+        if(SPIFFS.exists("/config.json"))
         {
-            DEBUG_MSG("#__ config.json is not exists\n");
-            DEBUG_MSG("#<< deleteConfig-end\n");
-            return true;
-        }
-
-        if(SPIFFS.remove("/config.json\n"))
-        {
-            DEBUG_MSG("#__ Deleted config.json\n");
-            DEBUG_MSG("#<< deleteConfig-end\n");
-            return true;
+            if(SPIFFS.remove("/config.json\n"))
+                DEBUG_MSG("#__ Deleted config.json\n");
+            else
+            {
+                DEBUG_MSG("#__ Cannot delete config.json\n");
+                delResult = false;
+            }
         }
         else
         {
-            DEBUG_MSG("#__ Cannot delete config.json\n");
-            DEBUG_MSG("#<< deleteConfig-end\n");
-            return false;
+            DEBUG_MSG("#__ config.json is not exists\n");
         }
+
+        if (SPIFFS.exists("/customConfig.json")) 
+        {
+            if(SPIFFS.remove("/customConfig.json"))
+                DEBUG_MSG("#__ Deleted customConfig.json.\n");
+            else
+            {
+                DEBUG_MSG("#__ Cannot delete customConfig.json\n");
+                delResult = false;
+            }
+        }
+        else
+        {
+            DEBUG_MSG("#__ customConfig.json is not exists\n");
+        }
+        
+        DEBUG_MSG("#<< deleteConfig-end\n");
+        SPIFFS.end();
+        return delResult;
     }
     else
     {
@@ -379,10 +394,6 @@ bool WiFiMan::apMode()
                 ESP.restart();
             }
         }
-
-
-
-
         //handle web request
         dnsServer->processNextRequest();
         webServer->handleClient();
@@ -416,8 +427,8 @@ void WiFiMan::handleNotFound()
 
     DEBUG_MSG("#><  handleNotFound\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
-    page =page + FPSTR(HTTP_INFO);
-    page=page + FPSTR(HTTP_FOOTER);
+    page += FPSTR(HTTP_INFO);
+    page += FPSTR(HTTP_FOOTER);
     page.replace("{info}","Error 404 : Page not found </br>Redirect to root");
 
     page.replace("{title}",_title);
@@ -439,8 +450,8 @@ void WiFiMan::handleRoot()
 
     DEBUG_MSG("#><  handleRoot\n");
     String page = FPSTR(HTTP_HEADER);
-    page=page + FPSTR(HTTP_INDEX);
-    page=page + FPSTR(HTTP_FOOTER);
+    page += FPSTR(HTTP_INDEX);
+    page += FPSTR(HTTP_FOOTER);
     
     page.replace("{title}",_title);
     page.replace("{banner}",_banner);
@@ -464,12 +475,18 @@ void WiFiMan::handleConfig()
             return webServer->requestAuthentication();
 
     DEBUG_MSG("#><  handleConfig\n");
+
     String page = FPSTR(HTTP_HEADER);
+    page += FPSTR(HTTP_CONFIG_WIFI_DEVICE);
+
+    if(MQTT)
+        page += FPSTR(HTTP_CONFIG_MQTT);
+
     if(AUTHENTICATION)
-        page=page + FPSTR(HTTP_CONFIG_AUTH);
-    else
-        page=page + FPSTR(HTTP_CONFIG_NORM);
-    page=page + FPSTR(HTTP_FOOTER);
+        page += FPSTR(HTTP_CONFIG_AUTH);
+
+    page += FPSTR(HTTP_CONFIG_END);
+    page += FPSTR(HTTP_FOOTER);
     
     page.replace("{title}",_title);
     page.replace("{banner}",_banner);
@@ -492,8 +509,8 @@ void WiFiMan::handleClearSetting()
 
     DEBUG_MSG("#><  handleClearSetting\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
-    page =page + FPSTR(HTTP_INFO);
-    page=page + FPSTR(HTTP_FOOTER);
+    page += FPSTR(HTTP_INFO);
+    page += FPSTR(HTTP_FOOTER);
     page.replace("{info}","<br/>All setting cleared<br/>Device will restart after 15 seconds.");
 
     page.replace("{title}",_title);
@@ -522,8 +539,8 @@ void WiFiMan::handleReset()
 
     DEBUG_MSG("#><  handleReset\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
-    page =page + FPSTR(HTTP_INFO);
-    page=page + FPSTR(HTTP_FOOTER);
+    page += FPSTR(HTTP_INFO);
+    page += FPSTR(HTTP_FOOTER);
     page.replace("{info}","<br/>Device will restart after 15 seconds.");
 
     page.replace("{title}",_title);
@@ -551,18 +568,47 @@ void WiFiMan::handleSave()
 
     DEBUG_MSG("#>> handleSave\n");
 
+    //get wifi config data
     String wifiSsid = webServer->arg("wifiSsid").c_str();
     String wifiPasswd = webServer->arg("wifiPasswd").c_str();
-    String mqttAddr = webServer->arg("mqttAddr").c_str();
-    String mqttPort = webServer->arg("mqttPort").c_str();
-    String mqttUsername = webServer->arg("mqttUsername").c_str();
-    String mqttPasswd = webServer->arg("mqttPasswd").c_str();
-    String mqttSub = webServer->arg("mqttSub").c_str();
-    String mqttPub = webServer->arg("mqttPub").c_str();
-    String mqttId = webServer->arg("mqttId").c_str();
+
+    //mqttid or deviceId
+    String mqttId =  webServer->arg("mqttId").c_str();
+    if(mqttId == "")
+    {
+        mqttId = _defaultMqttId + "-" + String(ESP.getChipId());
+        DEBUG_MSG("#__ Use default MQTT id : %s\n" , mqttId.c_str());
+    }
+
+    //get mqtt config
+    String mqttAddr;
+    String mqttPort;
+    String mqttUsername;
+    String mqttPasswd;
+    String mqttSub;
+    String mqttPub;
+    if(MQTT)
+    {
+        mqttAddr = webServer->arg("mqttAddr").c_str();
+        mqttPort = webServer->arg("mqttPort").c_str();
+        mqttUsername = webServer->arg("mqttUsername").c_str();
+        mqttPasswd = webServer->arg("mqttPasswd").c_str();
+        mqttSub = webServer->arg("mqttSub").c_str();
+        mqttPub = webServer->arg("mqttPub").c_str();
+    }
+    else
+    {
+        mqttAddr = "";
+        mqttPort = "";
+        mqttUsername = "";
+        mqttPasswd = "";
+        mqttSub = "";
+        mqttPub = "";
+    }
+
+    //Grt Authentication config
     String masterPasswd;
     String confirmPasswd;
-
     if(AUTHENTICATION)
     {
         masterPasswd = webServer->arg("masterPasswd").c_str();
@@ -573,6 +619,17 @@ void WiFiMan::handleSave()
         masterPasswd = "";
         confirmPasswd = "";
     }
+
+    //get custom config data
+    if(customConfig.count)
+    {
+        for(int i=0;i<customConfig.count;i++)
+        {
+            customConfig.args[i].value = webServer->arg(customConfig.args[i].key).c_str();
+        }
+    }
+
+    
 
     DEBUG_MSG("#__ wifiSsid : %s\n" , wifiSsid.c_str());
     DEBUG_MSG("#__ wifiPasswd : %s\n" , wifiPasswd.c_str());
@@ -606,12 +663,15 @@ void WiFiMan::handleSave()
         else
             writeConfig(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,_masterPasswd);//keep old master password
 
+        //save custom config
+        saveCustomConfig();
+
         //update password for OTA updater
         otaUpdater->updatePassword(_masterPasswd);
 
         String page = FPSTR(HTTP_HEADERRELOAD);
-        page =page + FPSTR(HTTP_INFO);
-        page=page + FPSTR(HTTP_FOOTER);
+        page += FPSTR(HTTP_INFO);
+        page += FPSTR(HTTP_FOOTER);
 
         //due Authentication has been changed, to connect to portal after changed password , esp8266 need to be reboot
         if(passwdChanged)
@@ -643,8 +703,8 @@ void WiFiMan::handleSave()
         DEBUG_MSG("#__ Invalid input\n");
 
         String page = FPSTR(HTTP_HEADER);
-        page =page + FPSTR(HTTP_EDIT);
-        page=page + FPSTR(HTTP_FOOTER);
+        page += FPSTR(HTTP_EDIT);
+        page += FPSTR(HTTP_FOOTER);
         page.replace("{info}",errorMsg);
 
         page.replace("{title}",_title);
@@ -670,8 +730,8 @@ void WiFiMan::handlePortal()
         //send portal page , display device ip address
         DEBUG_MSG("#><  handlePortal\n");
         String page = FPSTR(HTTP_HEADER);
-        page =page + FPSTR(HTTP_PORTAL);
-        page=page + FPSTR(HTTP_FOOTER);
+        page += FPSTR(HTTP_PORTAL);
+        page += FPSTR(HTTP_FOOTER);
 
         page.replace("{title}",_title);
         page.replace("{banner}",_banner);
@@ -698,8 +758,8 @@ void WiFiMan::handleHelp()
 
     DEBUG_MSG("#><  handleHelp\n");
     String page = FPSTR(HTTP_HEADER);
-    page =page + FPSTR(HTTP_HELP);
-    page=page + FPSTR(HTTP_FOOTER);
+    page += FPSTR(HTTP_HELP);
+    page += FPSTR(HTTP_FOOTER);
 
     page.replace("{title}",_title);
     page.replace("{banner}",_banner);
@@ -807,13 +867,18 @@ String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,Str
     if(wifiSsid == "")
         errorMsg += "Invalid SSID<br/>"; 
     //skip check for wifiPasswd (unsecure ap)
-    if(mqttAddr == "")
-        errorMsg += "Invalid MQTT address<br/>"; 
-    if(mqttPort == "")
-        errorMsg += "Invalid MQTT port<br/>"; 
-    if((mqttUsername != "" && mqttPasswd == "") || (mqttUsername == "" && mqttPasswd != ""))
-        errorMsg += "Invalid MQTT username or password<br/>"; 
+
+    if(MQTT)
+    {
+        if(mqttAddr == "")
+            errorMsg += "Invalid MQTT address<br/>"; 
+        if(mqttPort == "")
+            errorMsg += "Invalid MQTT port<br/>"; 
+        if((mqttUsername != "" && mqttPasswd == "") || (mqttUsername == "" && mqttPasswd != ""))
+            errorMsg += "Invalid MQTT username or password<br/>"; 
+    }
     //skip check for mqtt id , id not set , use esp8266 chipID instead
+
 
     if(AUTHENTICATION)
     {
@@ -875,14 +940,13 @@ bool WiFiMan::validConfig()
 
     if(_wifiSsid == "")
         returnCode = false;
-    if(_mqttAddr == "")
-        returnCode = false;
-    if(_mqttPort == "")
-        returnCode = false;
-    if(_mqttPort == "")
-        returnCode = false;
-    //if(_masterPasswd == "")
-    //    returnCode = false;
+    if(MQTT)
+    {
+        if(_mqttAddr == "")
+            returnCode = false;
+        if(_mqttPort == "")
+            returnCode = false;
+    }
 
     if(returnCode)
     {
@@ -896,7 +960,6 @@ bool WiFiMan::validConfig()
         DEBUG_MSG("#<< validConfig-end\n");
         return returnCode;
     }
-    
 }
 
 
@@ -924,9 +987,13 @@ String WiFiMan::getMqttUsername()
 { 
     return _mqttUsername; 
 }
-//get mqtt id
+//get mqtt id / device id
 String WiFiMan::getMqttId() 
 { 
+    return _mqttId;
+}
+String WiFiMan::getDeviceId()
+{
     return _mqttId;
 }
 //get mqtt sub topic
@@ -1077,4 +1144,183 @@ void WiFiMan::applyTheme(String &page)
 {
     DEBUG_MSG("#>< Apply theme\n");
     page.replace("{custom-css}",FPSTR(custom_css));
+
+    //testing - add custom config
+    if( customConfig.count > 0)
+        page.replace("{custom-arg}",httpCustomArg);
+    else
+        page.replace("{custom-arg}","");
+}
+
+
+void WiFiMan::addCustomArg(String label,String name,String length,String type,String placeholder,String addition)
+{
+    DEBUG_MSG("#>< addCustomArg\n");
+    String arg = FPSTR(HTTP_CUSTOM_ARG);
+
+    //add to arg pool
+    arg.replace("{arg-label}",label);
+    arg.replace("{arg-name}",name);
+    arg.replace("{arg-length}",length);
+    arg.replace("{arg-type}",type);
+    arg.replace("{arg-place-holder}",placeholder);
+    arg.replace("{arg-addition}",addition);
+    httpCustomArg += arg;
+
+    //add to custom arg struct
+    customConfig.args[customConfig.count].key = name;
+    customConfig.count++;
+}
+
+bool WiFiMan::saveCustomConfig()
+{
+    DEBUG_MSG("#>> saveCustomConfig\n");
+    if(customConfig.count)
+    {
+        //make json data
+        DynamicJsonBuffer jsonBuffer;
+        JsonObject& json = jsonBuffer.createObject();
+        String keyList = "";
+        for(int i=0;i<customConfig.count;i++)
+        {
+            DEBUG_MSG("#__ %s : %s \n",customConfig.args[i].key.c_str(),customConfig.args[i].value.c_str());
+            json[customConfig.args[i].key] = customConfig.args[i].value;
+            
+            //append key list
+            keyList += customConfig.args[i].key;
+            keyList += ",";
+        }
+
+        //write list of key and counter to json
+        json["key-count"] = customConfig.count;
+        json["key-list"] = keyList;
+
+        DEBUG_MSG("#__ Writing customConfig.json\n");
+        if(SPIFFS.begin())
+        {
+            File configFile = SPIFFS.open("/customConfig.json", "w");
+            if (!configFile) 
+            {
+                DEBUG_MSG("#__ Failed to open customConfig file for writing\n");
+                DEBUG_MSG("#__ Unmount FS\n");
+                SPIFFS.end();
+                DEBUG_MSG("#<< saveCustomConfig-end\n");
+                return false;
+            }
+
+            json.printTo(configFile);
+            DEBUG_MSG("#__ Save successed!\n");
+            configFile.close();
+            DEBUG_MSG("#__ Unmount FS\n");
+            SPIFFS.end();
+            DEBUG_MSG("#<< saveCustomConfig-end\n");
+            return true;
+        }
+        else
+        {
+            DEBUG_MSG("#__ Failed to mount FS\n");
+            DEBUG_MSG("#<< saveCustomConfig-end\n");
+            return false;
+        }
+
+    }
+    else
+    {
+        DEBUG_MSG("#__ There is no custom config to save.\n");
+        DEBUG_MSG("#__ Trying to delete old customConfig.json if exists.\n");
+
+        //delete old customConfig.json
+        if(SPIFFS.begin())
+        {
+            if (SPIFFS.exists("/customConfig.json")) 
+                SPIFFS.remove("/customConfig.json");
+            DEBUG_MSG("#__ Deleted customConfig.json.\n");
+            SPIFFS.end();
+        }
+        else
+        {
+            DEBUG_MSG("#__ Cannot mount FS.\n");
+            DEBUG_MSG("#<< saveCustomConfig-end\n");
+            return false;
+        }
+
+        DEBUG_MSG("#<< saveCustomConfig-end\n");
+        return true;
+    }
+}
+
+bool WiFiMan::getCustomConfig(CustomConfig *customConf)
+{
+    DEBUG_MSG("#>> getCustomConfigJson\n");
+    if(SPIFFS.begin())
+    {
+        File customConfigFile = SPIFFS.open("/customConfig.json", "r");
+        if (customConfigFile) 
+        {
+            DEBUG_MSG("#__ Reading customConfig.json.\n");
+            size_t size = customConfigFile.size();
+            std::unique_ptr<char[]> buf(new char[size]);
+
+            customConfigFile.readBytes(buf.get(), size);
+            DynamicJsonBuffer jsonBuffer;
+
+            //parse
+            JsonObject& json = jsonBuffer.parseObject(buf.get());
+
+            if(json.success())
+            {
+                customConfigFile.close();
+                SPIFFS.end();
+                DEBUG_MSG("#__ Parse json : success.\n");
+
+                // parse json to customConfig object
+                //get counter
+                customConf->count = json["key-count"].as<signed int>();
+                //get key
+                String keyList = json["key-list"].as<String>();
+                for(int i=0;i<customConf->count;i++)
+                {
+                    int index = keyList.indexOf(',');
+                    customConf->args[i].key = keyList.substring(0,index);
+                    keyList.replace(customConf->args[i].key+",","");
+                }
+                //get value
+                for(int i=0;i<customConf->count;i++)
+                {
+                    customConf->args[i].value = json[customConf->args[i].key].as<String>();
+                }
+
+
+                DEBUG_MSG("#<< readCustomConfigJson-end\n");
+                return true;
+            }
+            else
+            {
+                customConfigFile.close();
+                SPIFFS.end();
+                DEBUG_MSG("#__ Cannot parse json.\n");
+                DEBUG_MSG("#<< readCustomConfigJson-end\n");
+                return false;
+            }
+        }
+        else
+        {
+            SPIFFS.end();
+            DEBUG_MSG("#__ Cannot open customConfig.json\n");
+            DEBUG_MSG("#<< readCustomConfigJson-end\n");
+            return false;
+        }
+    }
+    else
+    {
+        DEBUG_MSG("#__ Failed to mount FS\n");
+        DEBUG_MSG("#<< readCustomConfigJson-end\n");
+        return false;
+    }
+}
+
+
+void WiFiMan::disableMqttConfig()
+{
+    MQTT = false;
 }

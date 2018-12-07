@@ -3,6 +3,8 @@ Config conf;
 
 void setup() 
 {
+  Serial.begin(115200);
+  
   //create default object
   WiFiMan wman = WiFiMan();
   //wman.deleteConfig();
@@ -51,4 +53,14 @@ void loop() {
   //reboot esp8266 to config mode , rebootToApMode() can be called anywhere even when FiFiMan out of scoop
   if(digitalRead(12)==LOW)
     rebootToApMode();
+  /// or use pin 0 as input.
+  /*
+  if(digitalRead(0)==LOW)
+  {
+    // delay is a must , or esp8266 will enter flash mode after reboot
+    delay(2000);
+    rebootToApMode();
+  }
+
+  */
 }

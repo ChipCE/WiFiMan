@@ -4,6 +4,7 @@ Config conf;
 
 void setup() 
 {
+    Serial.begin(115200);
     //create default object with authentication,serial control.Authentication and serial control can be set with WiFiMan(bool authentication,bool serialControl); or enable later (read below)
     WiFiMan wman = WiFiMan();
   
