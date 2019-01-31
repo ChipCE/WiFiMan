@@ -274,6 +274,7 @@ bool WiFiMan::clientMode()
         DEBUG_MSG("#<< clientMode-end\n");
         return false;
     }
+    else
     {
         DEBUG_MSG("#__ Connectiong to AP using saved config...\n");
         if(connect(_wifiSsid,_wifiPasswd))
@@ -314,10 +315,8 @@ bool WiFiMan::apMode()
     else
         WiFi.softAP(apSSID.c_str(),_apPasswd.c_str());
 
-
     DEBUG_MSG("#__ SoftAP SIID : %s Passwd : %s\n",apSSID.c_str(),_apPasswd.c_str());
     DEBUG_MSG("#__ Server IP : %s\n",_apIp.toString().c_str());
-
 
     delay(500);
 
@@ -611,8 +610,6 @@ void WiFiMan::handleSave()
         }
     }
 
-    
-
     DEBUG_MSG("#__ wifiSsid : %s\n" , wifiSsid.c_str());
     DEBUG_MSG("#__ wifiPasswd : %s\n" , wifiPasswd.c_str());
     DEBUG_MSG("#__ mqttAddr : %s\n" , mqttAddr.c_str());
@@ -630,7 +627,6 @@ void WiFiMan::handleSave()
         mqttId = _defaultMqttId + "-" + String(ESP.getChipId());
         DEBUG_MSG("#__ Use default MQTT id : %s\n" , mqttId.c_str());
     }
-
 
     String errorMsg = checkInput(wifiSsid,wifiPasswd,mqttAddr,mqttPort,mqttUsername,mqttPasswd,mqttSub,mqttPub,mqttId,masterPasswd,confirmPasswd);
 
