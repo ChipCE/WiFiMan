@@ -15,22 +15,13 @@
 #include "DebugHelper.h"
 #include "CusomConfig.h"
 
-/*
-#ifdef DEBUG_ESP_PORT
-#define DEBUG_MSG(...) DEBUG_ESP_PORT.printf( __VA_ARGS__ )
-#else
-#define DEBUG_MSG(...)
-#endif
-*/
-
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
 
 class WiFiMan
 {
   private:
-    bool AUTHENTICATION = false;;
-    //bool SERIALCONTROL = false;;
+    bool AUTHENTICATION = false;
     bool FORCE_AP = false;
     bool MQTT = true;
 
@@ -139,7 +130,6 @@ class WiFiMan
     bool saveCustomConfig();
     
   public:
-    //WiFiMan(bool authentication,bool serialControl);
     WiFiMan(bool authentication);
     WiFiMan();
     //~WiFiMan();
@@ -157,8 +147,6 @@ class WiFiMan
     
     //enable/disable webserver authentication
     void setAuthentication(bool enable);
-    //set serial control
-    //void setSerialControl(bool enable);
     //force config mode 
     void forceApMode();
     //Change WebUI of config portal
