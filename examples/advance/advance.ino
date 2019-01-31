@@ -5,14 +5,11 @@ Config conf;
 void setup() 
 {
     Serial.begin(115200);
-    //create default object with authentication,serial control.Authentication and serial control can be set with WiFiMan(bool authentication,bool serialControl); or enable later (read below)
+    //create default object without authentication.Authentication can be set with WiFiMan(bool authentication); or WiFiMan.setAuthentication(true) (read below)
     WiFiMan wman = WiFiMan();
   
     //clear all config (delete config.json)
     //wman.deleteConfig();
-    
-    //set serial control. during config mode , device can be config via serial command
-    wman.setSerialControl(true);
 
     //enable webserver authentication.If the username and password are not set , ap will use default value "admin":"password"
     wman.setAuthentication(true);
@@ -21,7 +18,7 @@ void setup()
     //set password use in the first time login.This can be changed in config menu.Default is "password"
     wman.setDefaultMasterPasswd("httpPassword");
 
-    //force config mode .Device will skip auto connect and jump straid into softAP mode(config portal)
+    //force config mode .Device will skip auto connect and jump strait into softAP mode(config portal)
     //wman.forceApMode();
 
     //Change WebUI of config portal with custom device info

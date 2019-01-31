@@ -2,18 +2,12 @@
 
 WiFiMan::WiFiMan()
 {
-    WiFiMan(false,false);
+    WiFiMan(false);
 }
 
-WiFiMan::WiFiMan(bool Authentication)
+WiFiMan::WiFiMan(bool authentication)
 {
-    WiFiMan(Authentication,false);
-}
-
-WiFiMan::WiFiMan(bool authentication,bool serialControl)
-{
-    AUTHENTICATION=authentication;
-    SERIALCONTROL=serialControl;
+    AUTHENTICATION = authentication;
     WiFi.disconnect();
 }
 
@@ -76,14 +70,6 @@ void WiFiMan::forceApMode()
 {
     FORCE_AP=true;
 }
-
-
-
-void WiFiMan::setSerialControl(bool enable)
-{
-    SERIALCONTROL = enable;
-}
-
 
 bool WiFiMan::readConfig()
 {
@@ -236,7 +222,7 @@ void WiFiMan::start()
         DEBUG_ESP_PORT.setDebugOutput(false);
     #endif
     DEBUG_MSG("#>> start\n");
-    serialController.reset(new SerialController(SERIALCONTROL));
+
     //get boot mode
     if(!FORCE_AP)
         FORCE_AP = getBootMode();
@@ -303,7 +289,6 @@ bool WiFiMan::clientMode()
             return false;
         }
     }
-
 }
 
 bool WiFiMan::apMode()
@@ -397,7 +382,6 @@ bool WiFiMan::apMode()
         //handle web request
         dnsServer->processNextRequest();
         webServer->handleClient();
-        serialController->handleSerial();
     }
 
     WiFi.softAPdisconnect(true);
@@ -427,8 +411,8 @@ void WiFiMan::handleNotFound()
 
     DEBUG_MSG("#><  handleNotFound\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
-    page += FPSTR(HTTP_INFO);
-    page += FPSTR(HTTP_FOOTER);
+    page.concat(FPSTR(HTTP_INFO));
+    page.concat(FPSTR(HTTP_FOOTER));
     page.replace("{info}","Error 404 : Page not found </br>Redirect to root");
 
     page.replace("{title}",_title);
@@ -450,8 +434,8 @@ void WiFiMan::handleRoot()
 
     DEBUG_MSG("#><  handleRoot\n");
     String page = FPSTR(HTTP_HEADER);
-    page += FPSTR(HTTP_INDEX);
-    page += FPSTR(HTTP_FOOTER);
+    page.concat(FPSTR(HTTP_INDEX));
+    page.concat(FPSTR(HTTP_FOOTER));
     
     page.replace("{title}",_title);
     page.replace("{banner}",_banner);
@@ -465,8 +449,6 @@ void WiFiMan::handleRoot()
     webServer->send ( 200, "text/html", page );
 }
 
-
-
 void WiFiMan::handleConfig()
 {
     //Authentication
@@ -477,16 +459,16 @@ void WiFiMan::handleConfig()
     DEBUG_MSG("#><  handleConfig\n");
 
     String page = FPSTR(HTTP_HEADER);
-    page += FPSTR(HTTP_CONFIG_WIFI_DEVICE);
+    page.concat(FPSTR(HTTP_CONFIG_WIFI_DEVICE));
 
     if(MQTT)
-        page += FPSTR(HTTP_CONFIG_MQTT);
+        page.concat(FPSTR(HTTP_CONFIG_MQTT));
 
     if(AUTHENTICATION)
-        page += FPSTR(HTTP_CONFIG_AUTH);
+        page.concat(FPSTR(HTTP_CONFIG_AUTH));
 
-    page += FPSTR(HTTP_CONFIG_END);
-    page += FPSTR(HTTP_FOOTER);
+    page.concat(FPSTR(HTTP_CONFIG_END));
+    page.concat(FPSTR(HTTP_FOOTER));
     
     page.replace("{title}",_title);
     page.replace("{banner}",_banner);
@@ -509,8 +491,8 @@ void WiFiMan::handleClearSetting()
 
     DEBUG_MSG("#><  handleClearSetting\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
-    page += FPSTR(HTTP_INFO);
-    page += FPSTR(HTTP_FOOTER);
+    page.concat(FPSTR(HTTP_INFO));
+    page.concat(FPSTR(HTTP_FOOTER));
     page.replace("{info}","<br/>All setting cleared<br/>Device will restart after 15 seconds.");
 
     page.replace("{title}",_title);
@@ -539,8 +521,8 @@ void WiFiMan::handleReset()
 
     DEBUG_MSG("#><  handleReset\n");
     String page = FPSTR(HTTP_HEADERRELOAD);
-    page += FPSTR(HTTP_INFO);
-    page += FPSTR(HTTP_FOOTER);
+    page.concat(FPSTR(HTTP_INFO));
+    page.concat(FPSTR(HTTP_FOOTER));
     page.replace("{info}","<br/>Device will restart after 15 seconds.");
 
     page.replace("{title}",_title);
@@ -670,8 +652,8 @@ void WiFiMan::handleSave()
         otaUpdater->updatePassword(_masterPasswd);
 
         String page = FPSTR(HTTP_HEADERRELOAD);
-        page += FPSTR(HTTP_INFO);
-        page += FPSTR(HTTP_FOOTER);
+        page.concat(FPSTR(HTTP_INFO));
+        page.concat(FPSTR(HTTP_FOOTER));
 
         //due Authentication has been changed, to connect to portal after changed password , esp8266 need to be reboot
         if(passwdChanged)
@@ -703,8 +685,8 @@ void WiFiMan::handleSave()
         DEBUG_MSG("#__ Invalid input\n");
 
         String page = FPSTR(HTTP_HEADER);
-        page += FPSTR(HTTP_EDIT);
-        page += FPSTR(HTTP_FOOTER);
+        page.concat(FPSTR(HTTP_EDIT));
+        page.concat(FPSTR(HTTP_FOOTER));
         page.replace("{info}",errorMsg);
 
         page.replace("{title}",_title);
@@ -730,8 +712,8 @@ void WiFiMan::handlePortal()
         //send portal page , display device ip address
         DEBUG_MSG("#><  handlePortal\n");
         String page = FPSTR(HTTP_HEADER);
-        page += FPSTR(HTTP_PORTAL);
-        page += FPSTR(HTTP_FOOTER);
+        page.concat(FPSTR(HTTP_PORTAL));
+        page.concat(FPSTR(HTTP_FOOTER));
 
         page.replace("{title}",_title);
         page.replace("{banner}",_banner);
@@ -758,8 +740,8 @@ void WiFiMan::handleHelp()
 
     DEBUG_MSG("#><  handleHelp\n");
     String page = FPSTR(HTTP_HEADER);
-    page += FPSTR(HTTP_HELP);
-    page += FPSTR(HTTP_FOOTER);
+    page.concat(FPSTR(HTTP_HELP));
+    page.concat(FPSTR(HTTP_FOOTER));
 
     page.replace("{title}",_title);
     page.replace("{banner}",_banner);
@@ -775,9 +757,6 @@ void WiFiMan::handleHelp()
 
     webServer->send ( 200, "text/html", page );
 }
-
-
-
 
 void WiFiMan::setupWebServer()
 {
@@ -865,17 +844,17 @@ String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,Str
     DEBUG_MSG("#>> checkInput\n");
     String errorMsg = "";
     if(wifiSsid == "")
-        errorMsg += "Invalid SSID<br/>"; 
+        errorMsg.concat("Invalid SSID<br/>"); 
     //skip check for wifiPasswd (unsecure ap)
 
     if(MQTT)
     {
         if(mqttAddr == "")
-            errorMsg += "Invalid MQTT address<br/>"; 
+            errorMsg.concat("Invalid MQTT address<br/>"); 
         if(mqttPort == "")
-            errorMsg += "Invalid MQTT port<br/>"; 
+            errorMsg.concat("Invalid MQTT port<br/>"); 
         if((mqttUsername != "" && mqttPasswd == "") || (mqttUsername == "" && mqttPasswd != ""))
-            errorMsg += "Invalid MQTT username or password<br/>"; 
+            errorMsg.concat("Invalid MQTT username or password<br/>"); 
     }
     //skip check for mqtt id , id not set , use esp8266 chipID instead
 
@@ -883,11 +862,11 @@ String WiFiMan::checkInput(String wifiSsid,String wifiPasswd,String mqttAddr,Str
     if(AUTHENTICATION)
     {
         if(_masterPasswd=="" &&  masterPasswd =="")
-            errorMsg += "New master password mut be set!<br/>"; 
+            errorMsg.concat("New master password mut be set!<br/>"); 
         if(masterPasswd == _defaultMasterPasswd)
-            errorMsg += "Invalid Password, cannot use default password!<br/>"; 
+            errorMsg.concat("Invalid Password, cannot use default password!<br/>"); 
         if(masterPasswd != confirmPasswd)
-            errorMsg += "Confirm password not matched<br/>"; 
+            errorMsg.concat("Confirm password not matched<br/>"); 
     }
     if(errorMsg!="")
         DEBUG_MSG("#__ Error : %s\n" , errorMsg.c_str());
@@ -1138,8 +1117,6 @@ bool WiFiMan::getConfig(Config *conf)
     return false;
 }
 
-
-
 void WiFiMan::applyTheme(String &page)
 {
     DEBUG_MSG("#>< Apply theme\n");
@@ -1151,7 +1128,6 @@ void WiFiMan::applyTheme(String &page)
     else
         page.replace("{custom-arg}","");
 }
-
 
 void WiFiMan::addCustomArg(String label,String name,String length,String type,String placeholder,String addition)
 {
@@ -1165,7 +1141,7 @@ void WiFiMan::addCustomArg(String label,String name,String length,String type,St
     arg.replace("{arg-type}",type);
     arg.replace("{arg-place-holder}",placeholder);
     arg.replace("{arg-addition}",addition);
-    httpCustomArg += arg;
+    httpCustomArg.concat(arg);
 
     //add to custom arg struct
     customConfig.args[customConfig.count].key = name;
@@ -1187,8 +1163,8 @@ bool WiFiMan::saveCustomConfig()
             json[customConfig.args[i].key] = customConfig.args[i].value;
             
             //append key list
-            keyList += customConfig.args[i].key;
-            keyList += ",";
+            keyList.concat(customConfig.args[i].key);
+            keyList.concat(",");
         }
 
         //write list of key and counter to json
@@ -1290,7 +1266,6 @@ bool WiFiMan::getCustomConfig(CustomConfig *customConf)
                     customConf->args[i].value = json[customConf->args[i].key].as<String>();
                 }
 
-
                 DEBUG_MSG("#<< readCustomConfigJson-end\n");
                 return true;
             }
@@ -1318,7 +1293,6 @@ bool WiFiMan::getCustomConfig(CustomConfig *customConf)
         return false;
     }
 }
-
 
 void WiFiMan::disableMqttConfig()
 {

@@ -9,7 +9,6 @@
 WiFiMan	KEYWORD1
 Config	KEYWORD1
 CustomConfig	KEYWORD1
-SerialController	KEYWORD1
 ESP8266OTA	KEYWORD1
 
 #######################################
@@ -24,7 +23,6 @@ getStatus	KEYWORD2
 handleSerial	KEYWORD2
 setDebug	KEYWORD2
 setAuthentication	KEYWORD2
-setSerialControl	KEYWORD2
 forceApMode	KEYWORD2
 setWebUi	KEYWORD2
 setApConfig	KEYWORD2

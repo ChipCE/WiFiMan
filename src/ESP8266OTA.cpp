@@ -41,8 +41,8 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
       //get page
 
       String pageIndex = FPSTR(HTTP_HEADER);
-      pageIndex =pageIndex + FPSTR(HTTP_UPDATER_INDEX);
-      pageIndex=pageIndex + FPSTR(HTTP_FOOTER);
+      pageIndex.concat(FPSTR(HTTP_UPDATER_INDEX));
+      pageIndex.concat(FPSTR(HTTP_FOOTER));
 
       pageIndex.replace("{title}",_title);
       pageIndex.replace("{banner}",_banner);
@@ -60,48 +60,12 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
     _server->on(path, HTTP_POST, [&](){
       if(!_authenticated)
         return _server->requestAuthentication();
-      /*
-      String pageSuccess = FPSTR(HTTP_HEADERRELOAD);
-      pageSuccess = pageSuccess + FPSTR(HTTP_UPDATER_SUCCESS);
-      pageSuccess = pageSuccess + FPSTR(HTTP_FOOTER);
-
-      pageSuccess.replace("{title}",_title);
-      pageSuccess.replace("{banner}",_banner);
-      pageSuccess.replace("{build}",_build);
-      pageSuccess.replace("{branch}",_branch);
-      pageSuccess.replace("{deviceInfo}",_deviceInfo);
-      pageSuccess.replace("{footer}",_footer);
-      pageSuccess.replace("{url}","/");
-      pageSuccess.replace("{delay}","30");
-
-      pageSuccess = applyTheme(pageSuccess);
-
-      String pageFailed = FPSTR(HTTP_HEADERRELOAD);
-      pageFailed = pageFailed + FPSTR(HTTP_UPDATER_FAILED);
-      pageFailed = pageFailed + FPSTR(HTTP_FOOTER);
-
-      pageFailed.replace("{title}",_title);
-      pageFailed.replace("{banner}",_banner);
-      pageFailed.replace("{build}",_build);
-      pageFailed.replace("{branch}",_branch);
-      pageFailed.replace("{deviceInfo}",_deviceInfo);
-      pageFailed.replace("{footer}",_footer);
-      pageFailed.replace("{url}","/");
-      pageFailed.replace("{delay}","30");
-
-      pageFailed = applyTheme(pageFailed);
-
-      _server->send(200, "text/html", Update.hasError() ? pageFailed : pageSuccess);
-      delay(3000);
-      //ESP.restart();
-      rebootToApMode();
-      */
 
       if(Update.hasError())
       {
         String pageFailed = FPSTR(HTTP_HEADERRELOAD);
-        pageFailed = pageFailed + FPSTR(HTTP_UPDATER_FAILED);
-        pageFailed = pageFailed + FPSTR(HTTP_FOOTER);
+        pageFailed.concat(FPSTR(HTTP_UPDATER_FAILED));
+        pageFailed.concat(FPSTR(HTTP_FOOTER));
 
         pageFailed.replace("{title}",_title);
         pageFailed.replace("{banner}",_banner);
@@ -121,8 +85,8 @@ void ESP8266OTA::setup(ESP8266WebServer *server, const char * path, String usern
       else
       {
         String pageSuccess = FPSTR(HTTP_HEADERRELOAD);
-        pageSuccess = pageSuccess + FPSTR(HTTP_UPDATER_SUCCESS);
-        pageSuccess = pageSuccess + FPSTR(HTTP_FOOTER);
+        pageSuccess.concat(FPSTR(HTTP_UPDATER_SUCCESS));
+        pageSuccess.concat(FPSTR(HTTP_FOOTER));
 
         pageSuccess.replace("{title}",_title);
         pageSuccess.replace("{banner}",_banner);

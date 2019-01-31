@@ -10,7 +10,6 @@
 #include "ESP8266OTA.h"
 #include "WebUI.h"
 #include "Config.h"
-#include "SerialController.h"
 #include "Boot.h"
 #include "Theme.h"
 #include "DebugHelper.h"
@@ -31,7 +30,7 @@ class WiFiMan
 {
   private:
     bool AUTHENTICATION = false;;
-    bool SERIALCONTROL = false;;
+    //bool SERIALCONTROL = false;;
     bool FORCE_AP = false;
     bool MQTT = true;
 
@@ -96,7 +95,7 @@ class WiFiMan
     std::unique_ptr<DNSServer> dnsServer;
     std::unique_ptr<ESP8266WebServer> webServer;
     std::unique_ptr<ESP8266OTA> otaUpdater;
-    std::unique_ptr<SerialController> serialController;
+    //std::unique_ptr<SerialController> serialController;
 
     //web handles
     void handleRoot();
@@ -140,7 +139,7 @@ class WiFiMan
     bool saveCustomConfig();
     
   public:
-    WiFiMan(bool authentication,bool serialControl);
+    //WiFiMan(bool authentication,bool serialControl);
     WiFiMan(bool authentication);
     WiFiMan();
     //~WiFiMan();
@@ -159,7 +158,7 @@ class WiFiMan
     //enable/disable webserver authentication
     void setAuthentication(bool enable);
     //set serial control
-    void setSerialControl(bool enable);
+    //void setSerialControl(bool enable);
     //force config mode 
     void forceApMode();
     //Change WebUI of config portal
