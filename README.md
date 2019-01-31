@@ -1,5 +1,5 @@
 # WiFiMan + ESP8266OTA
-Wifiman is Wifi manager for ESP8266 with customizable web UI and ability to config mqtt and control via serial.   
+Wifiman is Wifi manager for ESP8266 with customizable web UI.   
 ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.   
 
 ## Change logs
