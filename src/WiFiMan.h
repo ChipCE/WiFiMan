@@ -25,6 +25,8 @@ class WiFiMan
     bool FORCE_AP = false;
     bool MQTT = true;
 
+    int _configPin = -1;
+
     //mode
     int _mode = MODE::INIT;
 
@@ -128,6 +130,8 @@ class WiFiMan
     CustomConfig customConfig;
     
     bool saveCustomConfig();
+
+    bool handleConnectInterrupt();
     
   public:
     WiFiMan(bool authentication);
@@ -144,6 +148,8 @@ class WiFiMan
     bool isConnected();
     //get device mode
     int getStatus();
+    //set force config pin
+    void setConfigPin(int pinNumber);
     
     //enable/disable webserver authentication
     void setAuthentication(bool enable);

@@ -52,3 +52,4 @@ setUpdaterUi	KEYWORD2
 getCustomConfig	KEYWORD2
 disableMqttConfig	KEYWORD2
 getDeviceId	KEYWORD2
+setConfigPin	KEYWORD2

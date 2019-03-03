@@ -888,6 +888,8 @@ bool WiFiMan::connect(String wifiSsid,String wifiPasswd)
     {
         DEBUG_MSG("#__ .\n");
         delay(500);
+        if(handleConnectInterrupt())
+            return false;
     }
 
     if(WiFi.status() == WL_CONNECTED)
@@ -1293,4 +1295,21 @@ bool WiFiMan::getCustomConfig(CustomConfig *customConf)
 void WiFiMan::disableMqttConfig()
 {
     MQTT = false;
+}
+
+
+void WiFiMan::setConfigPin(int pinNumber)
+{
+    _configPin = pinNumber;
+    if(_configPin >= 0)
+        pinMode(_configPin,INPUT_PULLUP);
+}
+
+
+bool WiFiMan::handleConnectInterrupt()
+{
+    if(_configPin >= 0)
+        if(digitalRead(_configPin)==LOW)
+            return true;
+    return false;
 }

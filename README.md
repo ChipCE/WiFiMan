@@ -99,9 +99,11 @@ Some sample of Theme.h are available in themes folder.
 - void start();   
     Start WiFiMan , all config API must be called before this function.
 - bool deleteConfig();   
-    Delete saved config file (config.json).This must be called before call start().
+    Delete saved config file (config.json).This function must be called before call start().
 - void forceApMode();   
     Force device into Soft Access Point mode without trying to connect to saved config.
+- void setConfigPin(int pinNumber);   
+    Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when device trying to connec to AP using saved config). This function must be called before .start().
 - void disconnect();  
     Force disconnect from AP.
 - bool isConnected();   
@@ -113,6 +115,7 @@ Some sample of Theme.h are available in themes folder.
     - 2 CLIENT : Client mode,connected to AP   
     - 3 AP : Soft AP mode   
     - 4 TIMEOUT : Config portal timeout  
+
 
 ### Global controls
 Global control functions are not member of WiFiMan class, and can be called anywhere in sketch.
@@ -133,10 +136,14 @@ Global control functions are not member of WiFiMan class, and can be called anyw
 Enable Debug port in Arduino IDE (Tools > Debug port)
 
 ### How to reconfig esp8266 after connected to AP?
-There are 2 way to reconfig ESP8266 after connected to Access Point.Use rebootToApMode() or .forceApMode().
-- .forceApMode()
-This method force WiFiMan to skip auto-connect and go straight to Config mode.forceApMode() must be called before .start() called.
-- rebootToApMode()
+There are 4 way to reconfig ESP8266 after connected to Access Point.
+- .deleteConfig()   
+Delete saved config will force esp8266 into config mode. This function must be called before .start().
+- .forceApMode()   
+Force esp8266 into config mode. This function is same as deleteConfig(), but will not delete saved config. This function must be called before .start().
+- .setConfigPin(int pinNumber)   
+Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when device trying to connec to AP using saved config). This function must be called before wman.start()
+- rebootToApMode()   
 Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() may cause ESP8266 to crash at the first restart after serial flashing.For more information , please check [ESP8266 Issues](https://github.com/esp8266/Arduino/issues/1722)   
     

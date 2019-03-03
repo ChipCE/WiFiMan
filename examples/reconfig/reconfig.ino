@@ -7,14 +7,15 @@ void setup()
   
   //create default object
   WiFiMan wman = WiFiMan();
+
+  //delete saved config will force esp8266 into config mode. This function must be called before wman.start().
   //wman.deleteConfig();
 
-  //Force esp8266 to config mode , forceApMode(); must be called before wman.start()
-  pinMode(13,INPUT_PULLUP);
-  if(digitalRead(13)==LOW)
-    wman.forceApMode();
+  //Force esp8266 into config mode. This function is same as deleteConfig(), but will not delete saved config. This function must be called before wman.start().
+  wman.forceApMode();
 
-  pinMode(12,INPUT_PULLUP);
+  //or you can set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when device trying to connec to AP using saved config). This function must be called before wman.start()
+  wman.setConfigPin(0);
   
   wman.start();
 
@@ -47,20 +48,13 @@ void setup()
     Serial.print("IP : ");
     Serial.println(conf.localIP);
   }
+
+  pinMode(12,INPUT_PULLUP);
 }
 
-void loop() {
+void loop() 
+{
   //reboot esp8266 to config mode , rebootToApMode() can be called anywhere even when FiFiMan out of scoop
   if(digitalRead(12)==LOW)
     rebootToApMode();
-  /// or use pin 0 as input.
-  /*
-  if(digitalRead(0)==LOW)
-  {
-    // delay is a must , or esp8266 will enter flash mode after reboot
-    delay(2000);
-    rebootToApMode();
-  }
-
-  */
 }
