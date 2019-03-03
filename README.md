@@ -103,7 +103,7 @@ Some sample of Theme.h are available in themes folder.
 - void forceApMode();   
     Force device into Soft Access Point mode without trying to connect to saved config.
 - void setConfigPin(int pinNumber);   
-    Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when device trying to connec to AP using saved config). This function must be called before .start().
+    Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
 - void disconnect();  
     Force disconnect from AP.
 - bool isConnected();   
@@ -142,7 +142,7 @@ Delete saved config will force esp8266 into config mode. This function must be c
 - .forceApMode()   
 Force esp8266 into config mode. This function is same as deleteConfig(), but will not delete saved config. This function must be called before .start().
 - .setConfigPin(int pinNumber)   
-Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when device trying to connec to AP using saved config). This function must be called before wman.start()
+Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
 - rebootToApMode()   
 Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() may cause ESP8266 to crash at the first restart after serial flashing.For more information , please check [ESP8266 Issues](https://github.com/esp8266/Arduino/issues/1722)   

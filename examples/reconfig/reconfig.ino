@@ -12,10 +12,10 @@ void setup()
   //wman.deleteConfig();
 
   //Force esp8266 into config mode. This function is same as deleteConfig(), but will not delete saved config. This function must be called before wman.start().
-  wman.forceApMode();
+  //wman.forceApMode();
 
-  //or you can set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when device trying to connec to AP using saved config). This function must be called before wman.start()
-  wman.setConfigPin(0);
+  //or you can Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before wman.start()
+  //wman.setConfigPin(0);
   
   wman.start();
 
