@@ -223,6 +223,9 @@ void WiFiMan::start()
     #endif
     DEBUG_MSG("#>> start\n");
 
+    //turn off indicator led
+    setLedState(false);
+
     //get boot mode
     if(!FORCE_AP)
         FORCE_AP = getBootMode();
@@ -262,6 +265,9 @@ void WiFiMan::start()
 
 bool WiFiMan::clientMode()
 {
+    //turn on led during client mode
+    setLedState(true);
+
     DEBUG_MSG("#>> clientMode\n");
     WiFi.mode(WIFI_STA);
     
@@ -272,6 +278,7 @@ bool WiFiMan::clientMode()
     {
         DEBUG_MSG("#__ Invalid config. Exit client mode.\n");
         DEBUG_MSG("#<< clientMode-end\n");
+        setLedState(false);
         return false;
     }
     else
@@ -281,12 +288,14 @@ bool WiFiMan::clientMode()
         {
             DEBUG_MSG("#__ Connected to A\nP");
             DEBUG_MSG("#<< clientMode-end\n");
+            setLedState(false);
             return true;
         }
         else
         {
             DEBUG_MSG("#__ Cannot connected to AP\n");
             DEBUG_MSG("#<< clientMode-end\n");
+            setLedState(false);
             return false;
         }
     }
@@ -336,6 +345,9 @@ bool WiFiMan::apMode()
     DEBUG_MSG("#__ Started config potal\n");
     while(millis()-startConfigTime < _configTimeout*60000)
     {
+        //blink the led 
+        handleIndicatorLed();
+
         if(_action)
         {
             //check for action handle
@@ -391,12 +403,14 @@ bool WiFiMan::apMode()
         DEBUG_MSG("#__ Config potal timeout\n");
         _mode = MODE::TIMEOUT;
         DEBUG_MSG("#<< apMode-end\n");
+        setLedState(false);
         return false;
     }
     else
     {
         DEBUG_MSG("#__ Connected to AP\n");
         DEBUG_MSG("#<< apMode-end\n");
+        setLedState(false);
         return true;
     }
 }
@@ -1312,4 +1326,32 @@ bool WiFiMan::handleConnectInterrupt()
         if(digitalRead(_configPin)==LOW)
             return true;
     return false;
+}
+
+void WiFiMan::setLedPin(int pinNumber,bool onState)
+{
+    _indicatorLedPin = pinNumber;
+    _indicatorLedOnState = onState;
+}
+
+void WiFiMan::setLedState(bool state)
+{
+    if(_indicatorLedPin>-1)
+        if(_indicatorLedOnState)
+            digitalWrite(_indicatorLedPin,state);
+        else
+            digitalWrite(_indicatorLedPin,!state);
+}
+
+void WiFiMan::handleIndicatorLed()
+{
+    //ledBlinkInterval
+    if(_indicatorLedPin>-1)
+    {
+        if(millis()-ledTimer > ledBlinkInterval)
+        {
+            ledTimer = millis();
+            setLedState(!ledState);
+        }
+    }
 }

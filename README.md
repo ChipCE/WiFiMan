@@ -3,6 +3,12 @@ Wifiman is Wifi manager for ESP8266 with customizable web UI.
 ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.   
 
 ## Change logs
+### v1.3.2
+- Added void setLedPin(int pinNumber,bool onState) function.
+    Set simple led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode.
+### v1.3.1
+- Added setConfigPin(int pinNumber) function.
+Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
 ### v1.3.0
 - Removed serial control liblary and it's functions.
 - Optimized memory usage.
@@ -96,20 +102,23 @@ Some sample of Theme.h are available in themes folder.
     Get custom config parameters. Return true if success, false if there is no custom config or cannot read customConfig file.
 
 ### Controls
-- void start();   
-    Start WiFiMan , all config API must be called before this function.
-- bool deleteConfig();   
+
+- void start();
+    Start WiFiMan , all config APIs must be called before this function.
+- bool deleteConfig();
     Delete saved config file (config.json).This function must be called before call start().
-- void forceApMode();   
+- void forceApMode();
     Force device into Soft Access Point mode without trying to connect to saved config.
-- void setConfigPin(int pinNumber);   
+- void setConfigPin(int pinNumber);
     Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
+- void setLedPin(int pinNumber,bool onState);
+    Set led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode. This pin can be re-use later.
 - void disconnect();  
     Force disconnect from AP.
-- bool isConnected();   
+- bool isConnected();
     Check connection status.
-- int getStatus();   
-    Get device status   
+- int getStatus();
+    Get device status
     - 0 INIT   
     - 1 CONNECTING : AP mode,Trying to connect to AP   
     - 2 CLIENT : Client mode,connected to AP   

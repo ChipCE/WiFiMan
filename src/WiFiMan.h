@@ -25,7 +25,13 @@ class WiFiMan
     bool FORCE_AP = false;
     bool MQTT = true;
 
+    //custom config pin and led indicator
     int _configPin = -1;
+    int _indicatorLedPin = -1;
+    bool _indicatorLedOnState = true;
+    unsigned long ledTimer = 0;
+    bool ledState = false;
+    int ledBlinkInterval = 1000;
 
     //mode
     int _mode = MODE::INIT;
@@ -130,8 +136,9 @@ class WiFiMan
     CustomConfig customConfig;
     
     bool saveCustomConfig();
-
     bool handleConnectInterrupt();
+    void setLedState(bool state);
+    void handleIndicatorLed();
     
   public:
     WiFiMan(bool authentication);
@@ -150,6 +157,8 @@ class WiFiMan
     int getStatus();
     //set force config pin
     void setConfigPin(int pinNumber);
+    //set indicator led pin
+    void setLedPin(int pinNumber,bool onState);
     
     //enable/disable webserver authentication
     void setAuthentication(bool enable);
@@ -212,5 +221,6 @@ class WiFiMan
     bool getCustomConfig(CustomConfig *customConf);
     //disable MQTT config in UI
     void disableMqttConfig();
+
 };
 #endif

@@ -53,3 +53,4 @@ getCustomConfig	KEYWORD2
 disableMqttConfig	KEYWORD2
 getDeviceId	KEYWORD2
 setConfigPin	KEYWORD2
+setLedPin	KEYWORD2

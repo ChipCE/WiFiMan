@@ -14,8 +14,11 @@ void setup()
   //Force esp8266 into config mode. This function is same as deleteConfig(), but will not delete saved config. This function must be called before wman.start().
   //wman.forceApMode();
 
-  //or you can Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before wman.start()
+  //or you can Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before wman.start(). The number of connect atemp can be set with setMaxConnectAttempt(int connectAttempt)
   //wman.setConfigPin(0);
+
+  //set led indicator. The led will stay on when esp trying to connect to the network and blink when device in ap(config) mode.
+  //wman.setLedPin(13,true);
   
   wman.start();
 
@@ -50,6 +53,9 @@ void setup()
   }
 
   pinMode(12,INPUT_PULLUP);
+
+  //you can re-use the indicator led pin :)
+  // for example pinMode(13,INPUT); or pinMode(13,OUTPUT);
 }
 
 void loop() 
