@@ -3,6 +3,8 @@ Wifiman is Wifi manager for ESP8266 with customizable web UI.
 ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.   
 
 ## Change logs
+### v1.4.0
+- Migrating from  ArduinoJson 5 to  ArduinoJson 6
 ### v1.3.2
 - Added void setLedPin(int pinNumber,bool onState) function.
     Set simple led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode.
@@ -26,7 +28,7 @@ Some sample of Theme.h are available in themes folder.
 - Method 2 : Manual download/clone this repo and put in arduino library folder
 
 ## Require library
-- <a href="https://github.com/bblanchon/ArduinoJson">bblanchon's ArduinoJson v5.13.2</a>
+- <a href="https://github.com/bblanchon/ArduinoJson">bblanchon's ArduinoJson</a>
 
 ## About password setting
 - Soft AP password : Password of ESP8266 when in AP mode .Can be set with setApPasswd("yourPassword").If default password is not set, AP will fireup without password.

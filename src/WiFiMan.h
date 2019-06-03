@@ -15,6 +15,8 @@
 #include "DebugHelper.h"
 #include "CusomConfig.h"
 
+#define JSON_BUFFER_SIZE 4096
+
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
 

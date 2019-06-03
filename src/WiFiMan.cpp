@@ -87,9 +87,28 @@ bool WiFiMan::readConfig()
                 std::unique_ptr<char[]> buf(new char[size]);
 
                 configFile.readBytes(buf.get(), size);
-                DynamicJsonBuffer jsonBuffer;
-                JsonObject& json = jsonBuffer.parseObject(buf.get());
-                if(json.success())
+                //DynamicJsonBuffer jsonBuffer;
+                DynamicJsonDocument jsonDoc(JSON_BUFFER_SIZE);
+                //JsonObject& json = jsonBuffer.parseObject(buf.get());
+                auto jsonError = deserializeJson(jsonDoc, buf.get());
+                JsonObject json = jsonDoc.as<JsonObject>();
+
+                if(jsonError)
+                {
+                    DEBUG_MSG("#__ Cannot parse json. Wrong format ?\n");
+                    DEBUG_MSG("#__ Close config.js\n");
+                    configFile.close();
+                    DEBUG_MSG("#__ Unmount FS\n");
+                    SPIFFS.end();
+
+                    DEBUG_MSG("#__ Trying to delete config.js\n");
+                    deleteConfig();
+                    DEBUG_MSG("#__ write template for config.js\n");
+                    writeConfig("","","","","","","","","","");
+                    DEBUG_MSG("#<< readConfig-end\n");
+                    return false;
+                }
+                else
                 {
                     #ifdef DEBUG_ESP_PORT
                         DEBUG_MSG("#__ Json : ");
@@ -112,21 +131,6 @@ bool WiFiMan::readConfig()
                     SPIFFS.end();
                     DEBUG_MSG("#<< readConfig-end\n");
                     return true;
-                }
-                else
-                {
-                    DEBUG_MSG("#__ Cannot parse json. Wrong format ?\n");
-                    DEBUG_MSG("#__ Close config.js\n");
-                    configFile.close();
-                    DEBUG_MSG("#__ Unmount FS\n");
-                    SPIFFS.end();
-
-                    DEBUG_MSG("#__ Trying to delete config.js\n");
-                    deleteConfig();
-                    DEBUG_MSG("#__ write template for config.js\n");
-                    writeConfig("","","","","","","","","","");
-                    DEBUG_MSG("#<< readConfig-end\n");
-                    return false;
                 }
             }
             else
@@ -173,18 +177,21 @@ bool WiFiMan::writeConfig(String wifiSsid,String wifiPasswd,String mqttAddr,Stri
     _masterPasswd = masterPasswd;
 
     DEBUG_MSG("#__ Writing config.json\n");
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& json = jsonBuffer.createObject();
-    json["wifiSsid"] = _wifiSsid;
-    json["wifiPasswd"] = _wifiPasswd;
-    json["mqttAddr"] = _mqttAddr;
-    json["mqttPort"] = _mqttPort;
-    json["mqttUsername"] = _mqttUsername;
-    json["mqttPasswd"] = _mqttPasswd;
-    json["mqttSub"] = _mqttSub;
-    json["mqttPub"] = _mqttPub;
-    json["mqttId"] = _mqttId;
-    json["masterPasswd"] = _masterPasswd;
+    //DynamicJsonBuffer jsonBuffer;
+    DynamicJsonDocument jsonDoc(JSON_BUFFER_SIZE);
+    //JsonObject& json = jsonBuffer.createObject();
+    //JsonObject json = jsonDoc.createObject();
+
+    jsonDoc["wifiSsid"] = _wifiSsid;
+    jsonDoc["wifiPasswd"] = _wifiPasswd;
+    jsonDoc["mqttAddr"] = _mqttAddr;
+    jsonDoc["mqttPort"] = _mqttPort;
+    jsonDoc["mqttUsername"] = _mqttUsername;
+    jsonDoc["mqttPasswd"] = _mqttPasswd;
+    jsonDoc["mqttSub"] = _mqttSub;
+    jsonDoc["mqttPub"] = _mqttPub;
+    jsonDoc["mqttId"] = _mqttId;
+    jsonDoc["masterPasswd"] = _masterPasswd;
     
     
     if(SPIFFS.begin())
@@ -199,7 +206,8 @@ bool WiFiMan::writeConfig(String wifiSsid,String wifiPasswd,String mqttAddr,Stri
             return false;
         }
 
-        json.printTo(configFile);
+        //jsonDoc.printTo(configFile);
+        serializeJson(jsonDoc, configFile);
         DEBUG_MSG("#__ Save successed!\n");
         configFile.close();
         DEBUG_MSG("#__ Unmount FS\n");
@@ -1166,13 +1174,16 @@ bool WiFiMan::saveCustomConfig()
     if(customConfig.count)
     {
         //make json data
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject& json = jsonBuffer.createObject();
+        //DynamicJsonBuffer jsonBuffer;
+        DynamicJsonDocument jsonDoc(JSON_BUFFER_SIZE);
+        //JsonObject& json = jsonBuffer.createObject();
+        //JsonObject& json = jsonDoc.createObject();
+
         String keyList = "";
         for(int i=0;i<customConfig.count;i++)
         {
             DEBUG_MSG("#__ %s : %s \n",customConfig.args[i].key.c_str(),customConfig.args[i].value.c_str());
-            json[customConfig.args[i].key] = customConfig.args[i].value;
+            jsonDoc[customConfig.args[i].key] = customConfig.args[i].value;
             
             //append key list
             keyList.concat(customConfig.args[i].key);
@@ -1180,8 +1191,8 @@ bool WiFiMan::saveCustomConfig()
         }
 
         //write list of key and counter to json
-        json["key-count"] = customConfig.count;
-        json["key-list"] = keyList;
+        jsonDoc["key-count"] = customConfig.count;
+        jsonDoc["key-list"] = keyList;
 
         DEBUG_MSG("#__ Writing customConfig.json\n");
         if(SPIFFS.begin())
@@ -1196,7 +1207,8 @@ bool WiFiMan::saveCustomConfig()
                 return false;
             }
 
-            json.printTo(configFile);
+            //jsonDoc.printTo(configFile);
+            serializeJson(jsonDoc, configFile);
             DEBUG_MSG("#__ Save successed!\n");
             configFile.close();
             DEBUG_MSG("#__ Unmount FS\n");
@@ -1250,12 +1262,23 @@ bool WiFiMan::getCustomConfig(CustomConfig *customConf)
             std::unique_ptr<char[]> buf(new char[size]);
 
             customConfigFile.readBytes(buf.get(), size);
-            DynamicJsonBuffer jsonBuffer;
 
+            //DynamicJsonBuffer jsonBuffer;
             //parse
-            JsonObject& json = jsonBuffer.parseObject(buf.get());
+            DynamicJsonDocument jsonDoc(JSON_BUFFER_SIZE);
+            auto jsonError = deserializeJson(jsonDoc, buf.get());
+            JsonObject json = jsonDoc.as<JsonObject>();
 
-            if(json.success())
+
+            if(jsonError)
+            {
+                customConfigFile.close();
+                SPIFFS.end();
+                DEBUG_MSG("#__ Cannot parse json.\n");
+                DEBUG_MSG("#<< readCustomConfigJson-end\n");
+                return false;
+            }
+            else
             {
                 customConfigFile.close();
                 SPIFFS.end();
@@ -1280,14 +1303,6 @@ bool WiFiMan::getCustomConfig(CustomConfig *customConf)
 
                 DEBUG_MSG("#<< readCustomConfigJson-end\n");
                 return true;
-            }
-            else
-            {
-                customConfigFile.close();
-                SPIFFS.end();
-                DEBUG_MSG("#__ Cannot parse json.\n");
-                DEBUG_MSG("#<< readCustomConfigJson-end\n");
-                return false;
             }
         }
         else
