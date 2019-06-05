@@ -8,9 +8,10 @@ ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.
 ### v1.3.2
 - Added void setLedPin(int pinNumber,bool onState) function.
     Set simple led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode.
+- Added bool activeState argument for funtion setConfigPin.
 ### v1.3.1
-- Added setConfigPin(int pinNumber) function.
-Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
+- Added setConfigPin(int pinNumber,bool activeState) function.
+Set auto-connect interrupt pin. Hold this pin in active state for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
 ### v1.3.0
 - Removed serial control liblary and it's functions.
 - Optimized memory usage.
@@ -111,8 +112,8 @@ Some sample of Theme.h are available in themes folder.
     Delete saved config file (config.json).This function must be called before call start().
 - void forceApMode();
     Force device into Soft Access Point mode without trying to connect to saved config.
-- void setConfigPin(int pinNumber);
-    Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
+- void setConfigPin(int pinNumber,bool activeState);
+    Set auto-connect interrupt pin. Hold this pin in active state for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
 - void setLedPin(int pinNumber,bool onState);
     Set led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode. This pin can be re-use later.
 - void disconnect();  
@@ -152,8 +153,8 @@ There are 4 way to reconfig ESP8266 after connected to Access Point.
 Delete saved config will force esp8266 into config mode. This function must be called before .start().
 - .forceApMode()   
 Force esp8266 into config mode. This function is same as deleteConfig(), but will not delete saved config. This function must be called before .start().
-- .setConfigPin(int pinNumber)   
-Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
+- .setConfigPin(int pinNumber,bool activeState)   
+Set auto-connect interrupt pin. Hold this pin in active state for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
 - rebootToApMode()   
 Reboot esp8266 and go to config mode.This method is not a member of WiFiMan class and can be called anywhere even when WiFiMan is out of scoop.
 Caution : rebootToApMode use ESP.restart() to reboot the device . ESP.restart() may cause ESP8266 to crash at the first restart after serial flashing.For more information , please check [ESP8266 Issues](https://github.com/esp8266/Arduino/issues/1722)   

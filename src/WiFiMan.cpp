@@ -1327,18 +1327,24 @@ void WiFiMan::disableMqttConfig()
 }
 
 
-void WiFiMan::setConfigPin(int pinNumber)
+void WiFiMan::setConfigPin(int pinNumber,bool activeState)
 {
     _configPin = pinNumber;
+    _configPinActiveState = activeState;
     if(_configPin >= 0)
-        pinMode(_configPin,INPUT_PULLUP);
+    {
+        if(activeState)
+            pinMode(_configPin,INPUT);
+        else
+            pinMode(_configPin,INPUT_PULLUP);
+    }
 }
 
-
+//handle config button
 bool WiFiMan::handleConnectInterrupt()
 {
     if(_configPin >= 0)
-        if(digitalRead(_configPin)==LOW)
+        if(digitalRead(_configPin) == _configPinActiveState)
             return true;
     return false;
 }
