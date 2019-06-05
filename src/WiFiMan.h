@@ -27,8 +27,9 @@ class WiFiMan
 
     //custom config pin and led indicator
     int _configPin = -1;
+    bool _configPinActiveState = LOW;
     int _indicatorLedPin = -1;
-    bool _indicatorLedOnState = true;
+    bool _indicatorLedOnState = HIGH;
     unsigned long ledTimer = 0;
     bool ledState = false;
     int ledBlinkInterval = 1000;
@@ -156,7 +157,7 @@ class WiFiMan
     //get device mode
     int getStatus();
     //set force config pin
-    void setConfigPin(int pinNumber);
+    void setConfigPin(int pinNumber,bool activeState);
     //set indicator led pin
     void setLedPin(int pinNumber,bool onState);
     
