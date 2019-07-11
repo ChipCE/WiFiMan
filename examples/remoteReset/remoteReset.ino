@@ -75,4 +75,5 @@ void loop()
 {
     reconnect();
     sendMqtt();
+    client.loop();
 }
