@@ -21,6 +21,15 @@ void setup()
     //force config mode .Device will skip auto connect and jump strait into softAP mode(config portal)
     //wman.forceApMode();
 
+    //Set auto-connect interrupt pin. Hold this pin in active state for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP
+    wman.setConfigPin(0,LOW);
+
+    //Set simple led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode.
+    wman.setLedPin(13,LOW);
+
+    //set delay between connects attempts. The default value is 500ms. Lower this value might help the device connect to AP quicker, but too low will make the device unable to connect to the AP
+    //wman.setConnectDelay(300);
+
     //Change WebUI of config portal with custom device info
     wman.setWebUi("Page title","page banner","build : 0.01","Branch : master","device type : esp8266","page footer");
     //Change WebUI of config portal,deviceInfo will be fill with chipID

@@ -15,6 +15,8 @@
 #include "DebugHelper.h"
 #include "CusomConfig.h"
 
+#define JSON_BUFFER_SIZE 4096
+
 enum ACTION_TYPE {NONE,CONFIG_SAVED,CLEAR_CONFIG,SYS_RESET};
 enum MODE {INIT,CONNECTING,CLIENT,AP,TIMEOUT};
 
@@ -33,6 +35,9 @@ class WiFiMan
     unsigned long ledTimer = 0;
     bool ledState = false;
     int ledBlinkInterval = 1000;
+
+    //delay time between connect attempt
+    unsigned int _connect_delay = 500;
 
     //mode
     int _mode = MODE::INIT;
@@ -185,6 +190,8 @@ class WiFiMan
     void setDefaultMasterPasswd(String passwd);
     //set username to login (this cant be changed later)
     void setMasterUsername(String username);
+    //set delay between connects attempt
+    void setConnectDelay(unsigned int delayms);
 
     
     //get SSID
