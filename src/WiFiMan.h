@@ -31,7 +31,7 @@ class WiFiMan
     int _configPin = -1;
     bool _configPinActiveState = LOW;
     int _indicatorLedPin = -1;
-    bool _indicatorLedOnState = true;
+    bool _indicatorLedOnState = HIGH;
     unsigned long ledTimer = 0;
     bool ledState = false;
     int ledBlinkInterval = 1000;

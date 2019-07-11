@@ -13,6 +13,7 @@ ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.
 ### v1.3.1
 - Added setConfigPin(int pinNumber,bool activeState) function.
 Set auto-connect interrupt pin. Hold this pin in active state for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
+- Added bool activeState argument for funtion setConfigPin.   
 ### v1.3.0
 - Removed serial control liblary and it's functions.
 - Optimized memory usage.

@@ -15,7 +15,7 @@ void setup()
   //wman.forceApMode();
 
   //or you can Set auto-connect interrupt pin. Pull this pin down for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before wman.start(). The number of connect atemp can be set with setMaxConnectAttempt(int connectAttempt)
-  ////wman.setConfigPin(0,LOW);
+  //wman.setConfigPin(0,LOW);
 
   //set led indicator. The led will stay on when esp trying to connect to the network and blink when device in ap(config) mode.
   //wman.setLedPin(BUILTIN_LED,LOW);
