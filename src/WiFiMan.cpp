@@ -112,7 +112,8 @@ bool WiFiMan::readConfig()
                 {
                     #ifdef DEBUG_ESP_PORT
                         DEBUG_MSG("#__ Json : ");
-                        json.printTo(DEBUG_ESP_PORT);
+                        //json.printTo(DEBUG_ESP_PORT);
+                        serializeJson(json, DEBUG_ESP_PORT);
                         DEBUG_MSG("\n");
                     #endif
                     //parse 
@@ -406,19 +407,18 @@ bool WiFiMan::apMode()
     WiFi.softAPdisconnect(true);
     stopWebServer();
     stopDnsServer();
+    setLedState(false);
     if(!isConnected())
     {
         DEBUG_MSG("#__ Config potal timeout\n");
         _mode = MODE::TIMEOUT;
         DEBUG_MSG("#<< apMode-end\n");
-        setLedState(false);
         return false;
     }
     else
     {
         DEBUG_MSG("#__ Connected to AP\n");
         DEBUG_MSG("#<< apMode-end\n");
-        setLedState(false);
         return true;
     }
 }
@@ -909,7 +909,7 @@ bool WiFiMan::connect(String wifiSsid,String wifiPasswd)
     for (int tryCount = 0;(WiFi.status() != WL_CONNECTED) && (tryCount < _maxConnectAttempt);tryCount++) 
     {
         DEBUG_MSG("#__ .\n");
-        delay(500);
+        delay(_connect_delay);
         if(handleConnectInterrupt())
             return false;
     }
@@ -1353,15 +1353,17 @@ void WiFiMan::setLedPin(int pinNumber,bool onState)
 {
     _indicatorLedPin = pinNumber;
     _indicatorLedOnState = onState;
+    pinMode(pinNumber,OUTPUT);
+    digitalWrite(pinNumber,!onState);
 }
 
 void WiFiMan::setLedState(bool state)
 {
     if(_indicatorLedPin>-1)
-        if(_indicatorLedOnState)
-            digitalWrite(_indicatorLedPin,state);
+        if(state)
+            digitalWrite(_indicatorLedPin,_indicatorLedOnState);
         else
-            digitalWrite(_indicatorLedPin,!state);
+            digitalWrite(_indicatorLedPin,!_indicatorLedOnState);
 }
 
 void WiFiMan::handleIndicatorLed()
@@ -1373,6 +1375,12 @@ void WiFiMan::handleIndicatorLed()
         {
             ledTimer = millis();
             setLedState(!ledState);
+            ledState = !ledState;
         }
     }
+}
+
+void WiFiMan::setConnectDelay(unsigned int delayms)
+{
+    _connect_delay = delayms;
 }

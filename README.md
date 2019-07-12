@@ -5,6 +5,7 @@ ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.
 ## Change logs
 ### v1.4.0
 - Migrating from  ArduinoJson 5 to  ArduinoJson 6
+- Added void setConnectDelay(unsigned int delayms) : Set delay between connects attempts.
 ### v1.3.2
 - Added void setLedPin(int pinNumber,bool onState) function.
     Set simple led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode.
@@ -71,6 +72,8 @@ Some sample of Theme.h are available in themes folder.
     Add custom config parameter to config page.
 - void disableMqttConfig()   
     Disable MQTT configuration in web UI.
+- void setConnectDelay(unsigned int delayms)   
+    set delay between connects attempts. The default value is 500ms.
   
 ### Get config parameters
 - String getWifiSsid();   

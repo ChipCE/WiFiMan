@@ -36,6 +36,9 @@ class WiFiMan
     bool ledState = false;
     int ledBlinkInterval = 1000;
 
+    //delay time between connect attempt
+    unsigned int _connect_delay = 500;
+
     //mode
     int _mode = MODE::INIT;
 
@@ -187,6 +190,8 @@ class WiFiMan
     void setDefaultMasterPasswd(String passwd);
     //set username to login (this cant be changed later)
     void setMasterUsername(String username);
+    //set delay between connects attempt
+    void setConnectDelay(unsigned int delayms);
 
     
     //get SSID
