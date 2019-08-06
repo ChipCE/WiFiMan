@@ -249,6 +249,7 @@ void WiFiMan::start()
             //do nothing, leave the work for main program
             DEBUG_MSG("#__ Connected to AP\n");
             DEBUG_MSG("#<< start-end\n");
+            resetIndeicatorLed();
             return;
         }
         else
@@ -258,6 +259,7 @@ void WiFiMan::start()
             WiFi.disconnect();
             apMode();
             DEBUG_MSG("#<< start-end\n");
+            resetIndeicatorLed();
             return;
         }
     }
@@ -268,6 +270,7 @@ void WiFiMan::start()
         FORCE_AP = false;
         apMode();
         DEBUG_MSG("#<< start-end\n");
+        resetIndeicatorLed();
         return;
     }
 }
@@ -1383,4 +1386,10 @@ void WiFiMan::handleIndicatorLed()
 void WiFiMan::setConnectDelay(unsigned int delayms)
 {
     _connect_delay = delayms;
+}
+
+void WiFiMan::resetIndeicatorLed()
+{
+    if(_indicatorLedPin != -1)
+        pinMode(_indicatorLedPin,INPUT);
 }

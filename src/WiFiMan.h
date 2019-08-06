@@ -145,6 +145,7 @@ class WiFiMan
     bool handleConnectInterrupt();
     void setLedState(bool state);
     void handleIndicatorLed();
+    void resetIndeicatorLed(); //reset indicator pin to input
     
   public:
     WiFiMan(bool authentication);
