@@ -55,3 +55,4 @@ getDeviceId	KEYWORD2
 setConfigPin	KEYWORD2
 setLedPin	KEYWORD2
 setConnectDelay	KEYWORD2
+setExtFunc	KEYWORD2

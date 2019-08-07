@@ -74,7 +74,9 @@ Some sample of Theme.h are available in themes folder.
 - void disableMqttConfig()   
     Disable MQTT configuration in web UI.
 - void setConnectDelay(unsigned int delayms)   
-    set delay between connects attempts. The default value is 500ms.
+    Set delay between connects attempts. The default value is 500ms.
+- void setExtFunc(void (*f)(void))
+    Set external function. This function will be called in the main loop of WiFiMan. The ideal is to have some control when the esp8266 trying to connect to WiFi or in AP mode. Becareful when putting delay into the external function. Check the extFunction example for more detail.   
   
 ### Get config parameters
 - String getWifiSsid();   
