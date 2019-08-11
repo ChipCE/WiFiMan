@@ -5,7 +5,7 @@ ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.
 ## Change logs
 ### v1.4.1
 - Added void setExtFunc(void (*f)(void)) to execute custom action during config-mode.   
-- Added simple example for SonOff Basic.   
+- Added simple example for SonOff Basic.(experimental)   
 ### v1.4.0
 - Migrating from  ArduinoJson 5 to  ArduinoJson 6
 - Added void setConnectDelay(unsigned int delayms) : Set delay between connects attempts.
