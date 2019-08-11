@@ -53,6 +53,6 @@ getCustomConfig	KEYWORD2
 disableMqttConfig	KEYWORD2
 getDeviceId	KEYWORD2
 setConfigPin	KEYWORD2
-setLedPin	KEYWORD2
+setIndicatorLedPin	KEYWORD2
 setConnectDelay	KEYWORD2
 setExtFunc	KEYWORD2

@@ -26,7 +26,6 @@ class WiFiMan
     bool AUTHENTICATION = false;
     bool FORCE_AP = false;
     bool MQTT = true;
-    bool extFuncEnabled = false;
 
     //custom config pin and led indicator
     int _configPin = -1;
@@ -37,7 +36,7 @@ class WiFiMan
     bool ledState = false;
     int ledBlinkInterval = 1000;
 
-    //ext function 
+    bool extFuncEnabled = false;
     void (*extFunc)(void);
 
     //delay time between connect attempt
@@ -149,10 +148,9 @@ class WiFiMan
     bool handleConnectInterrupt();
     void setLedState(bool state);
     void handleIndicatorLed();
-    void resetIndeicatorLed(); //reset indicator pin to input
+    void resetLedState();
     void handleExtFunc();
-    void nonBlockingDelay(unsigned long ms);
-
+    
   public:
     WiFiMan(bool authentication);
     WiFiMan();
@@ -171,7 +169,9 @@ class WiFiMan
     //set force config pin
     void setConfigPin(int pinNumber,bool activeState);
     //set indicator led pin
-    void setLedPin(int pinNumber,bool onState);
+    void setIndicatorLedPin(int pinNumber,bool onState);
+    //set ext extFunc
+    void setExtFunc(void (*f)(void));
     
     //enable/disable webserver authentication
     void setAuthentication(bool enable);
@@ -199,9 +199,10 @@ class WiFiMan
     void setMasterUsername(String username);
     //set delay between connects attempt
     void setConnectDelay(unsigned int delayms);
-    //set ext function
-    void setExtFunc(void (*f)(void));
+    
 
+
+    
     //get SSID
     String getWifiSsid();
     //get wifi password
@@ -237,5 +238,6 @@ class WiFiMan
     bool getCustomConfig(CustomConfig *customConf);
     //disable MQTT config in UI
     void disableMqttConfig();
+
 };
 #endif

@@ -25,7 +25,7 @@ void setup()
     wman.setConfigPin(0,LOW);
 
     //Set simple led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode.
-    wman.setLedPin(13,LOW);
+    wman.setIndicatorLedPin(13,LOW);
 
     //set delay between connects attempts. The default value is 500ms. Lower this value might help the device connect to AP quicker, but too low will make the device unable to connect to the AP
     //wman.setConnectDelay(300);

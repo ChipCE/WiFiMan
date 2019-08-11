@@ -3,11 +3,14 @@ Wifiman is Wifi manager for ESP8266 with customizable web UI.
 ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.   
 
 ## Change logs
+### v1.4.1
+- Added void setExtFunc(void (*f)(void)) to execute custom action during config-mode.   
+- Added simple example for SonOff Basic.   
 ### v1.4.0
 - Migrating from  ArduinoJson 5 to  ArduinoJson 6
 - Added void setConnectDelay(unsigned int delayms) : Set delay between connects attempts.
 ### v1.3.2
-- Added void setLedPin(int pinNumber,bool onState) function.
+- Added void setIndicatorLedPin(int pinNumber,bool onState) function.
     Set simple led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode.
 - Added bool activeState argument for funtion setConfigPin.
 ### v1.3.1
@@ -74,9 +77,7 @@ Some sample of Theme.h are available in themes folder.
 - void disableMqttConfig()   
     Disable MQTT configuration in web UI.
 - void setConnectDelay(unsigned int delayms)   
-    Set delay between connects attempts. The default value is 500ms.
-- void setExtFunc(void (*f)(void))
-    Set external function. This function will be called in the main loop of WiFiMan. The ideal is to have some control when the esp8266 trying to connect to WiFi or in AP mode. Becareful when putting delay into the external function. Check the extFunction example for more detail.   
+    set delay between connects attempts. The default value is 500ms.
   
 ### Get config parameters
 - String getWifiSsid();   
@@ -120,7 +121,7 @@ Some sample of Theme.h are available in themes folder.
     Force device into Soft Access Point mode without trying to connect to saved config.
 - void setConfigPin(int pinNumber,bool activeState);
     Set auto-connect interrupt pin. Hold this pin in active state for more than 500ms will skip auto-connect process(only works when the device trying to connect to AP using saved config). This function must be called before .start()
-- void setLedPin(int pinNumber,bool onState);
+- void setIndicatorLedPin(int pinNumber,bool onState);
     Set led indicator. The led will stay on when the esp trying to connect to the network and blink when the esp in ap(config) mode. This pin can be re-use later.
 - void disconnect();  
     Force disconnect from AP.

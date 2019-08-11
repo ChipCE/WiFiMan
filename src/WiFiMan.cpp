@@ -249,7 +249,7 @@ void WiFiMan::start()
             //do nothing, leave the work for main program
             DEBUG_MSG("#__ Connected to AP\n");
             DEBUG_MSG("#<< start-end\n");
-            resetIndeicatorLed();
+            resetLedState();
             return;
         }
         else
@@ -259,7 +259,7 @@ void WiFiMan::start()
             WiFi.disconnect();
             apMode();
             DEBUG_MSG("#<< start-end\n");
-            resetIndeicatorLed();
+            resetLedState();
             return;
         }
     }
@@ -270,7 +270,7 @@ void WiFiMan::start()
         FORCE_AP = false;
         apMode();
         DEBUG_MSG("#<< start-end\n");
-        resetIndeicatorLed();
+        resetLedState();
         return;
     }
 }
@@ -339,7 +339,7 @@ bool WiFiMan::apMode()
     DEBUG_MSG("#__ SoftAP SIID : %s Passwd : %s\n",apSSID.c_str(),_apPasswd.c_str());
     DEBUG_MSG("#__ Server IP : %s\n",_apIp.toString().c_str());
 
-    nonBlockingDelay(500);
+    delay(500);
 
     DEBUG_MSG("#__ Start DNS server\n");
     dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
@@ -357,6 +357,10 @@ bool WiFiMan::apMode()
     DEBUG_MSG("#__ Started config potal\n");
     while(millis()-startConfigTime < _configTimeout*60000)
     {
+        //blink the led 
+        handleIndicatorLed();
+        handleExtFunc();
+
         if(_action)
         {
             //check for action handle
@@ -402,8 +406,6 @@ bool WiFiMan::apMode()
         //handle web request
         dnsServer->processNextRequest();
         webServer->handleClient();
-        handleIndicatorLed();
-        handleExtFunc();
     }
 
     WiFi.softAPdisconnect(true);
@@ -530,7 +532,7 @@ void WiFiMan::handleClearSetting()
     applyTheme(page);
 
     webServer->send ( 200, "text/html", page );
-    nonBlockingDelay(2000);
+    delay(2000);
     webServer->client().stop();
     _action = ACTION_TYPE::CLEAR_CONFIG;
 }
@@ -559,7 +561,7 @@ void WiFiMan::handleReset()
 
     applyTheme(page);
     webServer->send ( 200, "text/html", page );
-    nonBlockingDelay(2000);
+    delay(2000);
     webServer->client().stop();
     _action = ACTION_TYPE::SYS_RESET;
 }
@@ -911,10 +913,10 @@ bool WiFiMan::connect(String wifiSsid,String wifiPasswd)
     for (int tryCount = 0;(WiFi.status() != WL_CONNECTED) && (tryCount < _maxConnectAttempt);tryCount++) 
     {
         DEBUG_MSG("#__ .\n");
-        nonBlockingDelay(_connect_delay);
+        delay(_connect_delay);
+        handleExtFunc();
         if(handleConnectInterrupt())
             return false;
-        handleExtFunc();
     }
 
     if(WiFi.status() == WL_CONNECTED)
@@ -1100,19 +1102,41 @@ void WiFiMan::setHelpInfo(String helpInfo)
 
 bool WiFiMan::getConfig(Config *conf)
 {
+    //conf->wifiSsid = (char*)malloc((_wifiSsid.length()+1) * sizeof(char));
     strcpy(conf->wifiSsid,_wifiSsid.c_str());
+
+    //conf->wifiPasswd = (char*)malloc((_wifiPasswd.length()+1) * sizeof(char));
     strcpy(conf->wifiPasswd,_wifiPasswd.c_str());
+    
+    //conf->mqttAddr = (char*)malloc((_mqttAddr.length()+1) * sizeof(char));
     strcpy(conf->mqttAddr,_mqttAddr.c_str());
+    
     conf->mqttPort = _mqttPort.toInt();
+    
+    //conf->mqttUsername = (char*)malloc((_mqttUsername.length()+1) * sizeof(char));
     strcpy(conf->mqttUsername,_mqttUsername.c_str());
+    
+    //conf->mqttPasswd = (char*)malloc((_mqttPasswd.length()+1) * sizeof(char));
     strcpy(conf->mqttPasswd,_mqttPasswd.c_str());
+    
+    //conf->mqttSub = (char*)malloc((_mqttSub.length()+1) * sizeof(char));
     strcpy(conf->mqttSub,_mqttSub.c_str());
+    
+    //conf->mqttPub = (char*)malloc((_mqttPub.length()+1) * sizeof(char));
     strcpy(conf->mqttPub,_mqttPub.c_str());
+    
+    //conf->mqttId = (char*)malloc((_mqttId.length()+1) * sizeof(char));
     strcpy(conf->mqttId,_mqttId.c_str());
+    
+    //conf->masterPasswd = (char*)malloc((_masterPasswd.length()+1) * sizeof(char));
     strcpy(conf->masterPasswd,_masterPasswd.c_str());
+
     String mdnsName = _mqttId + ".local";
+    //conf->mdnsName = (char*)malloc((mdnsName.length()+1) * sizeof(char));
     strcpy(conf->mdnsName,mdnsName.c_str());
+
     conf->localIP = getIp();
+
     if(WiFi.status() == WL_CONNECTED)
         return true;
     return false;
@@ -1330,7 +1354,7 @@ bool WiFiMan::handleConnectInterrupt()
     return false;
 }
 
-void WiFiMan::setLedPin(int pinNumber,bool onState)
+void WiFiMan::setIndicatorLedPin(int pinNumber,bool onState)
 {
     _indicatorLedPin = pinNumber;
     _indicatorLedOnState = onState;
@@ -1366,11 +1390,12 @@ void WiFiMan::setConnectDelay(unsigned int delayms)
     _connect_delay = delayms;
 }
 
-void WiFiMan::resetIndeicatorLed()
+void WiFiMan::resetLedState()
 {
     if(_indicatorLedPin != -1)
         pinMode(_indicatorLedPin,INPUT);
 }
+
 
 void WiFiMan::setExtFunc(void (*f)(void))
 {
@@ -1382,11 +1407,4 @@ void WiFiMan::handleExtFunc()
 {
     if(extFuncEnabled)
         extFunc();
-}
-
-void WiFiMan::nonBlockingDelay(unsigned long ms)
-{
-    unsigned long endTime = millis() + ms;
-    while(millis() < endTime)
-        handleExtFunc();
 }
