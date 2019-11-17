@@ -295,7 +295,7 @@ bool WiFiMan::clientMode()
     }
     else
     {
-        DEBUG_MSG("#__ Connectiong to AP using saved config...\n");
+        DEBUG_MSG("#__ Connecting to AP using saved config...\n");
         if(connect(_wifiSsid,_wifiPasswd))
         {
             DEBUG_MSG("#__ Connected to A\nP");
