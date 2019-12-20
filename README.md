@@ -1,6 +1,7 @@
 # WiFiMan + ESP8266OTA
 Wifiman is Wifi manager for ESP8266 with customizable web UI.   
 ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.   
+The library is not working with the new 2.6.x version of ESP8266 core. The last compatible version is 2.5.2. I will try to fix this problem on the next release.
 
 ## Change logs
 ### v1.4.1
