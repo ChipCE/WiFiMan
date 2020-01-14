@@ -7,7 +7,7 @@
 #include <FS.h>
 #include <ESP8266mDNS.h>
 #include <DNSServer.h>
-#include "ESP8266OTA.h"
+//#include "ESP8266OTA.h"
 #include "WebUI.h"
 #include "Config.h"
 #include "Boot.h"
@@ -36,8 +36,8 @@ class WiFiMan
     bool ledState = false;
     int ledBlinkInterval = 1000;
 
-    bool extFuncEnabled = false;
-    void (*extFunc)(void);
+    // bool extFuncEnabled = false;
+    // void (*extFunc)(void);
 
     //delay time between connect attempt
     unsigned int _connect_delay = 500;
@@ -102,7 +102,7 @@ class WiFiMan
     //controller objects
     std::unique_ptr<DNSServer> dnsServer;
     std::unique_ptr<ESP8266WebServer> webServer;
-    std::unique_ptr<ESP8266OTA> otaUpdater;
+    //std::unique_ptr<ESP8266OTA> otaUpdater;
     //std::unique_ptr<SerialController> serialController;
 
     //web handles
@@ -149,7 +149,7 @@ class WiFiMan
     void setLedState(bool state);
     void handleIndicatorLed();
     void resetLedState();
-    void handleExtFunc();
+    //void handleExtFunc();
     
   public:
     WiFiMan(bool authentication);
@@ -171,7 +171,7 @@ class WiFiMan
     //set indicator led pin
     void setIndicatorLedPin(int pinNumber,bool onState);
     //set ext extFunc
-    void setExtFunc(void (*f)(void));
+    //void setExtFunc(void (*f)(void));
     
     //enable/disable webserver authentication
     void setAuthentication(bool enable);

@@ -1,8 +1,14 @@
 # WiFiMan + ESP8266OTA
 Wifiman is Wifi manager for ESP8266 with customizable web UI.   
 ESP8266 is a modified version of ESP8266HTTPUpdateServer customizable web UI.   
+V1.4.1 is not compatible with the new 2.6.x version of ESP8266 core. The last compatible version is 2.5.2.   
+V1.4.2 is compatible with the latest ESP8266 core but without the OTA update function. I will try to bring back the OTA update function later.   
+
 
 ## Change logs
+### v1.4.2
+- Temporarily disable OTA update function due incompatible with newest ESP8266 core(v2.6.x)  
+- Temporarily disable setExtFunction due Soft WDT crash.(Issues #15)   
 ### v1.4.1
 - Added void setExtFunc(void (*f)(void)) to execute custom action during config-mode.   
 - Added simple example for SonOff Basic.(experimental)   
