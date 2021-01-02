@@ -671,7 +671,7 @@ void WiFiMan::handleSave()
         saveCustomConfig();
 
         //update password for OTA updater
-        //otaUpdater->updatePassword(_masterPasswd);
+        otaUpdater->updatePassword(_masterPasswd);
 
         String page = FPSTR(HTTP_HEADERRELOAD);
         page.concat(FPSTR(HTTP_INFO));
@@ -787,18 +787,18 @@ void WiFiMan::setupWebServer()
     webServer.reset(new ESP8266WebServer(80));
 
     //setup ota updater
-    //otaUpdater.reset(new ESP8266OTA());
-    //otaUpdater->setUpdaterUi(_title,_banner,_build,_branch,_deviceInfo,_footer);
-    // if(AUTHENTICATION)
-    // {
-    //     //otaUpdater->setup(webServer.get(),_httpUsername.c_str(),getApPassword());
-    //     //DEBUG_MSG("#__ start otaUpdater : %s@%s\n",_httpUsername.c_str(),getApPassword().c_str());
-    // }
-    // else
-    // {
-    //     //otaUpdater->setup(webServer.get());
-    //     //DEBUG_MSG("#__ start otaUpdater\n");
-    // }
+    otaUpdater.reset(new ESP8266OTA());
+    otaUpdater->setUpdaterUi(_title,_banner,_build,_branch,_deviceInfo,_footer);
+    if(AUTHENTICATION)
+    {
+        otaUpdater->setup(webServer.get(),_httpUsername.c_str(),getApPassword());
+        DEBUG_MSG("#__ start otaUpdater : %s@%s\n",_httpUsername.c_str(),getApPassword().c_str());
+    }
+    else
+    {
+        otaUpdater->setup(webServer.get());
+        DEBUG_MSG("#__ start otaUpdater\n");
+    }
     
     //setup web server handles
     webServer->on("/", std::bind(&WiFiMan::handleRoot, this));

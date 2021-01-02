@@ -19,8 +19,6 @@
 #include "Boot.h"
 #include "DebugHelper.h"
 
-class ESP8266WebServer;
-
 class ESP8266OTA
 {
   private:
