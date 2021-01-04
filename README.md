@@ -4,7 +4,7 @@ ESP8266OTA is a modified version of ESP8266HTTPUpdateServer also with a customiz
 
 ## Change logs
 ### v1.4.3
-- Bring back OTA update function
+- Bring back OTA update function (Thank to [DerTomm](https://github.com/DerTomm))  
 ### v1.4.2
 - Temporarily disable OTA update function due incompatible with newest ESP8266 core(v2.6.x)  
 - Temporarily disable setExtFunction due Soft WDT crash.(Issues #15)   
