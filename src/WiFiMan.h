@@ -7,7 +7,7 @@
 #include <FS.h>
 #include <ESP8266mDNS.h>
 #include <DNSServer.h>
-//#include "ESP8266OTA.h"
+#include "ESP8266OTA.h"
 #include "WebUI.h"
 #include "Config.h"
 #include "Boot.h"
@@ -102,7 +102,7 @@ class WiFiMan
     //controller objects
     std::unique_ptr<DNSServer> dnsServer;
     std::unique_ptr<ESP8266WebServer> webServer;
-    //std::unique_ptr<ESP8266OTA> otaUpdater;
+    std::unique_ptr<ESP8266OTA> otaUpdater;
     //std::unique_ptr<SerialController> serialController;
 
     //web handles
