@@ -427,8 +427,37 @@ bool WiFiMan::apMode()
     }
 }
 
+boolean WiFiMan::isIp(String str)
+{
+    for (size_t i = 0; i < str.length(); i++) {
+        int c = str.charAt(i);
+        if (c != '.' && (c < '0' || c > '9')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+String WiFiMan::toStringIp(IPAddress ip)
+{
+    String res = "";
+    for (int i = 0; i < 3; i++) {
+        res += String((ip >> (8 * i)) & 0xFF) + ".";
+    }
+    res += String(((ip >> 8 * 3)) & 0xFF);
+    return res;
+}
+
 void WiFiMan::handleNotFound()
 {
+    if (!isIp(webServer->hostHeader()) && webServer->hostHeader() != getDnsName()) {
+        Serial.println("Request redirected to captive portal");
+        webServer->sendHeader("Location", String("http://") + toStringIp(webServer->client().localIP()), true);
+        webServer->send(302, "text/plain", "");   // Empty content inhibits Content-length header so we have to close the socket ourselves.
+        webServer->client().stop(); // Stop is needed because we sent no content length
+        return;
+    }
+  
     //Authentication
     if(AUTHENTICATION)
         if(!webServer->authenticate(_httpUsername.c_str(),getApPassword().c_str()))

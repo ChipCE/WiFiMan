@@ -110,6 +110,8 @@ class WiFiMan
     void handleConfig();
     void handleClearSetting();
     void handleReset();
+    boolean isIp(String str);
+    String toStringIp(IPAddress ip);
     void handleNotFound();
     void handleSave();
     void handlePortal();
